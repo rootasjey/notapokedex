@@ -44,22 +44,13 @@ export default class PokeList extends Component {
     )
   }
 
-  private _onClickCell() {
-    // fetch(`https://pokeapi.co/api/v2/pokemon/${newValue}/`, { mode: 'cors' })
-    //   .then((response) => {
-    //     return response.json();
-    //   })
-    //   .then((data) => { console.log(data); });
-  }
-
   private _onRenderCell(item: PokemonLineEntry, index?: number, isScrolling?: boolean): JSX.Element {
     return (
-      <Row data-is-focusable={true}>
-        {/* <div>{ item.id }   { item.name }</div> */}
-        <Link to={`/pokemon/${item.id}`}>
-          {item.id}   {item.name}
-        </Link>
-      </Row>
+      <Link to={`/pokemon/${item.id}`} data-is-focusable={true}>
+        <Row>
+            {item.id}   {item.name}
+        </Row>
+      </Link>
     )
   }
 }

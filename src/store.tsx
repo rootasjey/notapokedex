@@ -1,11 +1,24 @@
-import { observable, computed, action } from 'mobx';
+import { observable, computed, action, runInAction } from 'mobx';
 
 class Store {
   @observable public list: PokemonLineEntry[] = [];
 
   @observable public focusedItem?: PokemonLineEntry;
   @observable public searchInput: string = '';
-  @observable public selectedItem?: PokemonLineEntry;
+  @observable public selectedItem: Pokemon = {
+    name: '',
+    sprites: {
+      back_default: '',
+      front_default: '',
+    },
+    types: [
+      {
+        slot: 0,
+        type: { name: '', url: '' }
+      }
+    ],
+    weight: 0,
+  };
 
   @action
   public async fetchPokedex() {
@@ -25,6 +38,21 @@ class Store {
     } catch (error) {
       this.list = [];
     }
+  }
+
+  @action
+  public async fetchPokemon(id: number) {
+    const url = this.list.length > 0 ?
+      this.list[id].url :
+      `https://pokeapi.co/api/v2/pokemon/${id}`;
+
+    try {
+      const rawData = await fetch(url, { mode: 'cors' });
+      const data = await rawData.json();
+
+      this.selectedItem = data;
+
+    } catch (error) { }
   }
 
   @computed public get filteredList(): PokemonLineEntry[] {

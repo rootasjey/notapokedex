@@ -1,5 +1,16 @@
-.App {
-  min-height: 100%;
+html, body {
   background-color: #eee;
-  padding: 20px;
+
+  overflow: hidden;
+  min-height: 100%;
+  height: 100%;
+}
+
+.App {
+  margin: 30px;
+}
+
+.ms-List a {
+  color: inherit;
+  text-decoration: none;
 }

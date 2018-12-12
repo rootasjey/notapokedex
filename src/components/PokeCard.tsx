@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import { store } from '../store';
+import { observer } from "mobx-react";
+import { ImageFit } from 'office-ui-fabric-react/lib/Image';
 
 import {
   DocumentCard,
@@ -8,36 +11,43 @@ import {
   IDocumentCardPreviewProps
  } from 'office-ui-fabric-react/lib/DocumentCard';
 
- import { ImageFit } from 'office-ui-fabric-react/lib/Image';
+ export interface ICardProps {
+   id: number;
+ }
 
-export default class PokeCard extends Component {
+@observer
+export default class PokeCard extends Component<ICardProps, {}> {
+  constructor(props: ICardProps) {
+    super(props);
+  }
+
+  public componentDidMount() {
+    store.fetchPokemon(this.props.id);
+  }
+
   render() {
+    const pokemon = store.selectedItem;
+
     const previewProps: IDocumentCardPreviewProps = {
       previewImages: [
         {
-          previewIconProps: {
-            iconName: 'OpenFile',
-            styles: {
-              root: {
-                fontSize: 42,
-                color: '#ffffff',
-              }
-            }
-          },
+          previewImageSrc: pokemon.sprites.front_default,
+          imageFit: ImageFit.cover,
           width: 318,
           height: 196
         }
       ]
     }
+
     return(
       <div>
         <DocumentCard>
           <DocumentCardPreview {...previewProps} />
           <div>
-            <DocumentCardTitle title="Pokemon's name" />
+            <DocumentCardTitle title={pokemon.name} />
             <DocumentCardActivity
-              activity="Created a few minutes agoo"
-              people={[{ name: 'Sasha', profileImageSrc: '' }]} />
+              activity={pokemon.types[0].type.name}
+              people={[{ name: 'Loading...', profileImageSrc: '' }]} />
           </div>
         </DocumentCard>
       </div>
