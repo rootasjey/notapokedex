@@ -8,6 +8,13 @@ A simple react pokedex app for test purposes.
 
 ![screenshot2.png](screenshot2.png)
 
+## development
+
+* Clone the repo with `git clone https://github.com/rootasjey/catchthemall`
+* Go to the cloned repo with `cd catchthemall`
+* Install dependencies with `yarn` or `npm install`
+* Run the app with `yarn run start` or `npm start`
+
 ## tools
 
 * [fabric](https://developer.microsoft.com/en-us/fabric)

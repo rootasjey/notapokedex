@@ -6,7 +6,6 @@ import styled from "styled-components";
 
 const CenteredDiv = styled.div`
   margin: auto;
-  width: 60%;
 `;
 
 export default class Details extends Component {

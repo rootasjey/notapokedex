@@ -6,11 +6,19 @@ class Store {
   @observable public focusedItem?: PokemonLineEntry;
   @observable public searchInput: string = '';
   @observable public selectedItem: Pokemon = {
+    id: -1,
     name: '',
     sprites: {
       back_default: '',
+      back_female: '',
+      back_shiny: '',
+      back_shiny_female: '',
       front_default: '',
+      front_female: '',
+      front_shiny: '',
+      front_shiny_female: '',
     },
+    stats: [],
     types: [
       {
         slot: 0,
@@ -51,6 +59,7 @@ class Store {
       const data = await rawData.json();
 
       this.selectedItem = data;
+      console.log(data);
 
     } catch (error) { }
   }

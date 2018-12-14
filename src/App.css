@@ -1,14 +1,12 @@
 html, body {
   background-color: #eee;
-
-  overflow: hidden;
   min-height: 100%;
   height: 100%;
 }
 
-.App {
+/* .App {
   margin: 30px;
-}
+} */
 
 .ms-List a {
   color: inherit;

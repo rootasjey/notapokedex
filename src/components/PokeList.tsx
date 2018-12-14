@@ -1,14 +1,13 @@
-import React, { Component }               from "react";
 import { FocusZone, FocusZoneDirection }  from 'office-ui-fabric-react/lib/FocusZone';
+import { Link }                           from "react-router-dom";
 import { List }                           from 'office-ui-fabric-react/lib/List';
-import { store }                          from '../store';
 import { observer }                       from 'mobx-react';
+import React, { Component }               from "react";
+import { store }                          from '../store';
 import styled                             from 'styled-components';
-import { Link } from "react-router-dom";
 
 const CenteredDiv = styled.div`
   margin: auto;
-  width: 60%;
 `;
 
 const ListDivContainer = styled.div`
