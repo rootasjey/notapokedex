@@ -29,8 +29,40 @@ const PokeType = styled.div`
     transition: .5s;
   }
 
+  &.bug {
+    background-color: #badc58;
+  }
+
+  &.dark {
+    background-color: #2C3A47;
+  }
+
+  &.dragon {
+    background-color: #3B3B98;
+  }
+
   &.electric {
     background-color: #f1c40f;
+  }
+
+  &.fairy {
+    background-color: #ff7979;
+  }
+
+  &.flying {
+    background-color: #c7ecee;
+  }
+
+  &.fighting {
+    background-color: #c0392b;
+  }
+
+  &.fire {
+    background-color: #e74c3c;
+  }
+
+  &.ghost {
+    background-color: #182C61;
   }
 
   &.grass {
@@ -41,8 +73,8 @@ const PokeType = styled.div`
     background-color: #795548;
   }
 
-  &.fire {
-    background-color: #e74c3c;
+  &.ice {
+    background-color: #7ed6df;
   }
 
   &.insect {
@@ -57,8 +89,16 @@ const PokeType = styled.div`
     background-color: #9b59b6;
   }
 
+  &.psychic {
+    background-color: #FC427B;
+  }
+
   &.rock {
     background-color: #9E9E9E;
+  }
+
+  &.water {
+    background-color: #686de0;
   }
 `;
 

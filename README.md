@@ -1,4 +1,4 @@
-# catchthemall
+# pokedex
 
 A simple react pokedex app for test purposes.
 
