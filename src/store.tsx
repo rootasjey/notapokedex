@@ -6,6 +6,7 @@ class Store {
   @observable public focusedItem?: PokemonLineEntry;
   @observable public searchInput: string = '';
   @observable public selectedItem: Pokemon = {
+    abilities: [],
     id: -1,
     name: '',
     sprites: {

@@ -17,6 +17,8 @@
     "target": "es2018"
   },
   "include": [
-    "src"
+    "src",
+    "tests",
+    "typings"
   ]
 }

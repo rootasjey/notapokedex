@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import './App.css';
+import React from 'react';
+import './styles/App.css';
 
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-import Home from './components/Home';
-import Details from './components/Details';
+import Home from './pages/home';
+import Details from './pages/details';
 
 const App = () => {
   return (

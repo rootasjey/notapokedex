@@ -1,8 +1,8 @@
-import React, { Component, FormEvent }  from "react";
-import { TextField }                    from 'office-ui-fabric-react/lib/TextField';
 import PokeList                         from './PokeList';
-import { store }                        from '../store';
+import React, { Component, FormEvent }  from 'react';
+import { store }                        from '../../store';
 import styled                           from 'styled-components';
+import { TextField }                    from 'office-ui-fabric-react/lib/TextField';
 
 const StyledField = styled(TextField)`
   margin: auto;
@@ -28,6 +28,7 @@ export default class Home extends Component {
       <div>
         <StyledHeader>
           <h1>Catch Them All !</h1>
+
           <StyledField placeholder='Search a Pokémon' onChange={(e, newValue) => this.search(e, newValue) } />
         </StyledHeader>
 

@@ -3,7 +3,7 @@ import { Link }                           from "react-router-dom";
 import { List }                           from 'office-ui-fabric-react/lib/List';
 import { observer }                       from 'mobx-react';
 import React, { Component }               from "react";
-import { store }                          from '../store';
+import { store }                          from '../../store';
 import styled                             from 'styled-components';
 
 const CenteredDiv = styled.div`
