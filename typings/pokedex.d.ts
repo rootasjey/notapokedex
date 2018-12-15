@@ -19,6 +19,25 @@ interface Pokemon {
   weight: number;
 }
 
+
+interface PokemonLineEntry {
+  id: number;
+  name: string;
+  url: string;
+}
+
+interface PokeAPIListData {
+  count: number;
+  next?: number;
+  previous?: number;
+  results: PokeAPISimplePoke[];
+}
+
+interface PokeAPISimplePoke {
+  name: string;
+  url: string;
+}
+
 interface Sprites {
   back_default: string;
   back_female: string;
@@ -49,22 +68,4 @@ interface Type {
 interface TypeEntry {
   slot: number;
   type: Type;
-}
-
-interface PokemonLineEntry {
-  id: number;
-  name: string;
-  url: string;
-}
-
-interface PokeAPIListData {
-  count: number;
-  next?: number;
-  previous?: number;
-  results: PokeAPISimplePoke[];
-}
-
-interface PokeAPISimplePoke {
-  name: string;
-  url: string;
 }
