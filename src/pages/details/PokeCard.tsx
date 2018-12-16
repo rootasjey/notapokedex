@@ -22,9 +22,8 @@ export default class PokeCard extends Component<ICardProps, {}> {
     const pokemon = store.selectedItem;
 
     return(
-      <div>
-        <PageTitle>{ pokemon.name }</PageTitle>
-        <PageSubTitle>#{ pokemon.id }</PageSubTitle>
+      <StyledContainer>
+        <StyledPageSubTitle>#{ pokemon.id }</StyledPageSubTitle>
 
         <Caroussel
           pokemonName={pokemon.name}
@@ -36,16 +35,20 @@ export default class PokeCard extends Component<ICardProps, {}> {
         <Stats stats={pokemon.stats} />
 
         <Abilities abilities={pokemon.abilities} />
-      </div>
+      </StyledContainer>
     )
   }
 }
 
-const PageTitle = styled.h1`
+const StyledContainer = styled.div`
+  padding-top: 60px;
+`;
+
+const StyledPageTitle = styled.h1`
   text-align: center;
 `;
 
-const PageSubTitle = styled.h1`
+const StyledPageSubTitle = styled.h1`
   text-align: center;
   font-size: 2em;
 `;

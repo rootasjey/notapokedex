@@ -12,6 +12,7 @@ interface Ability {
 interface Pokemon {
   abilities: AbilityEntry[];
   id: number;
+  isBookmarked: boolean;
   name: string;
   sprites: Sprites;
   stats: StatEntry[];

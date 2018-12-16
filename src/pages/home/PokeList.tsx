@@ -15,31 +15,44 @@ library.add(faBookmark, faBookmarked);
 
 @observer
 export default class PokeList extends Component {
+  private myList: any;
+
+  constructor(props: any) {
+    super(props);
+    this.myList = React.createRef();
+  }
+
   public render() {
+    // NOTE: By-pass to force rows to update when necessary.
+    if (store.bookmarksChanged && this.myList.current) {
+      this.myList.current.forceUpdate();
+      store.setOffBookmarksChanged();
+    }
+
     const items = store.filteredList.length > 0 ? store.filteredList : store.list;
     const noMatch = store.searchInput.length > 0 && store.filteredList.length === 0;
 
     return (
-      <ListView items={items} onRenderCell={this._onRenderCell} noMatch={noMatch} />
+      <StyledCenteredContent>
+        <EmptyView hidden={noMatch} />
+
+        <FocusZone direction={FocusZoneDirection.vertical} hidden={noMatch} >
+          <ListDivContainer data-is-scrollable={true} >
+            <List ref={this.myList} items={items} onRenderCell={this._onRenderCell} />
+          </ListDivContainer>
+        </FocusZone>
+      </StyledCenteredContent>
     )
   }
 
-  // NOTE: Mutating the pokemon's name on the row
-  // is just a hack to force the row to re-render.
   private _onRenderCell(poke: PokemonLineEntry, index?: number, isScrolling?: boolean): JSX.Element {
     return (
       <Row>
         <StyledLink to={`/pokemon/${poke.id}`} data-is-focusable={true}>
-            #{poke.id} - {poke.name}
+            #{poke.id + 1} - {poke.name}
         </StyledLink>
 
-        <div onClick={() => {
-            poke.name += ' ';
-            store.isBookmarked(poke) ?
-            store.removeBookmark(poke) :
-            store.addBookmark(poke)}
-          }>
-
+        <div onClick={() => { toggleBookmark(poke) }}>
           <StyledFontAwesomeIcon icon={store.isBookmarked(poke) ? ['fas', 'bookmark'] : ['far', 'bookmark']} />
         </div>
       </Row>
@@ -47,25 +60,20 @@ export default class PokeList extends Component {
   }
 }
 
-function EmptyView() {
-  return <CenteredDiv>No match has been found :(</CenteredDiv>;
+function toggleBookmark(pokemon: PokemonLineEntry) {
+  store.isBookmarked(pokemon) ?
+    store.removeBookmark(pokemon) :
+    store.addBookmark(pokemon);
 }
 
-function ListView(props: any) {
-  const items: PokemonLineEntry[] = props.items;
-  const { noMatch, onRenderCell } = props;
+function EmptyView(props: any) {
+  const hidden: boolean = props.hidden;
 
-  if (noMatch) {
-    return EmptyView();
+  if (hidden) {
+    return <CenteredDiv>No match has been found :(</CenteredDiv>;
   }
 
-  return (
-    <FocusZone direction={FocusZoneDirection.vertical} >
-      <ListDivContainer data-is-scrollable={true} >
-        <List items={items} onRenderCell={onRenderCell} />
-      </ListDivContainer>
-    </FocusZone>
-  )
+  return <span></span>;
 }
 
 const CenteredDiv = styled.div`
@@ -76,13 +84,19 @@ const ListDivContainer = styled.div`
   overflow: auto;
   margin: auto;
   max-height: 500px;
-  width: 60%;
+`;
+
+const StyledCenteredContent = styled.div`
+  display: flex;
+  justify-content: center;
 `;
 
 const Row = styled.div`
   border-bottom-color: #95a5a6;
   border-bottom-style: solid;
   border-bottom-width: 1px;
+
+  min-width: 256px;
 
   cursor: pointer;
 
