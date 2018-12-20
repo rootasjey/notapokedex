@@ -61,6 +61,27 @@ interface StatEntry {
   stat: Stat;
 }
 
+interface Tweet {
+  created_at: string;
+  id_str: string;
+  text: string;
+  user: TweetUser;
+}
+
+interface TweetServiceResponseData {
+  tweets: TweetServiceResponseStatuses;
+}
+
+interface TweetServiceResponseStatuses {
+  statuses: Tweet[];
+}
+
+interface TweetUser {
+  name: string;
+  profile_image_url: string;
+  screen_name: string;
+}
+
 interface Type {
   name: string;
   url: string;

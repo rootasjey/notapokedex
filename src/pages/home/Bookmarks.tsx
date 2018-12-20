@@ -26,8 +26,12 @@ export function Bookmarks(props: any): JSX.Element {
 
     return (
       <StyledBookmark key={ key }>
-        <StyledLink to={ `/pokemon/${poke.id}` }>
+        <StyledLink
+          to={ `/pokemon/${poke.id}` }
+          onClick={ () => store.setPartialPokemon(poke) } >
+
           #{ poke.id + 1 } - { poke.name }
+
         </StyledLink>
 
         <StyledBookmarkIconContainer onClick={ () => store.removeBookmark(poke) }>

@@ -2,16 +2,16 @@ import { faArrowAltCircleLeft }       from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon }            from '@fortawesome/react-fontawesome';
 import { library }                    from '@fortawesome/fontawesome-svg-core';
 
-import React, { Component }           from "react";
+import { observer }                   from 'mobx-react';
+import React, { Component }           from 'react';
 import { store }                      from '../../store';
 
-import styled                         from "styled-components";
+import styled                         from 'styled-components';
 
 import { Layer }                      from 'office-ui-fabric-react/lib/Layer';
 
 import PokeCard                       from './PokeCard';
-import { observer }                   from 'mobx-react';
-import { autorun } from 'mobx';
+import Tweets                         from './Tweets';
 
 library.add(faArrowAltCircleLeft);
 
@@ -46,17 +46,17 @@ export default class Details extends Component {
   render() {
     const props: any  = this.props;
     const id          = props.match.params.id;
-    const pokemon     = store.selectedItem;
+    const pokemon     = store.selectedPokemon;
     const poke        = {...pokemon, ...{id: pokemon.id - 1}};
 
     return (
       <StyledCenteredDiv>
         <StyledLayer>
-          <div onClick={() => this.goBack()}>
+          <div onClick={ () => this.goBack() }>
             <StyledFontAwesomeIconRotate icon="arrow-alt-circle-left" size="2x" />
           </div>
 
-          <StyledTitle>{store.selectedItem.name}</StyledTitle>
+          <StyledTitle>{ store.selectedPokemon.name }</StyledTitle>
 
           <div onClick={() => { this.toggleBookmark(pokemon); }}>
             <StyledFontAwesomeIcon
@@ -67,6 +67,8 @@ export default class Details extends Component {
         </StyledLayer>
 
         <PokeCard id={id} />
+
+        <Tweets />
       </StyledCenteredDiv>
     );
   }

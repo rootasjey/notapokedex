@@ -801,28 +801,28 @@
   resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-0.2.10.tgz#ae0e6858daf6f9ff1e2396f9fbea87b244628343"
   integrity sha512-FbrzSgFDzoC6Dm8w7gCWxgdffFbYV7O/4THOtYDQEplZVOpYIA3vjgnxCXApY49YaIQ91mxIGROS3d7wS+fO3A==
 
-"@fortawesome/fontawesome-svg-core@^1.2.10":
+"@fortawesome/fontawesome-svg-core@1.2.10":
   version "1.2.10"
   resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-svg-core/-/fontawesome-svg-core-1.2.10.tgz#235f82b209f36c94792a79b9aea127dfa29651c9"
   integrity sha512-x9rYQ4jPVWnXgsle/MzaV2qDwNfc1Gm5DB0T76WOp4RDZ/esjEE0OvKtMa2qFvG1NqYbelgN4gChA+ttAqPtaw==
   dependencies:
     "@fortawesome/fontawesome-common-types" "^0.2.10"
 
-"@fortawesome/free-regular-svg-icons@^5.6.1":
+"@fortawesome/free-regular-svg-icons@5.6.1":
   version "5.6.1"
   resolved "https://registry.yarnpkg.com/@fortawesome/free-regular-svg-icons/-/free-regular-svg-icons-5.6.1.tgz#7da568c166105936554c512f4e02487aa311c756"
   integrity sha512-5ztVA0cdbY+uMi1huFdC5gQTmsTMT3x87Ow7kN89ZbtaQcEcVG9l7h1+KIN5CrtQ5+ihdkDZdbZh7yqAlGDjaA==
   dependencies:
     "@fortawesome/fontawesome-common-types" "^0.2.10"
 
-"@fortawesome/free-solid-svg-icons@^5.6.1":
+"@fortawesome/free-solid-svg-icons@5.6.1":
   version "5.6.1"
   resolved "https://registry.yarnpkg.com/@fortawesome/free-solid-svg-icons/-/free-solid-svg-icons-5.6.1.tgz#5f6888639c8564a7ba98f4f295807ca5bc250e2c"
   integrity sha512-J5es6So1zoT234XkYVkuDtHKeeNe7gvTM9VHdEwG8wSKwSIbdMixoNAMBbL88haGUolj0YjEmZwov4NMTx3Srw==
   dependencies:
     "@fortawesome/fontawesome-common-types" "^0.2.10"
 
-"@fortawesome/react-fontawesome@^0.1.3":
+"@fortawesome/react-fontawesome@0.1.3":
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/@fortawesome/react-fontawesome/-/react-fontawesome-0.1.3.tgz#266b4047892c3d10498af1075d89252f74015b11"
   integrity sha512-tc689l67rPZ7+ynZVUgOXY80rAt5KxvuH1qjPpJcbyJzJHzk5yhrD993BjsSEdPBLTtPqmvwynsO/XrAQqHbtg==
@@ -2605,6 +2605,14 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
+cross-fetch@2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-2.2.2.tgz#a47ff4f7fc712daba8f6a695a11c948440d45723"
+  integrity sha1-pH/09/xxLauo9qaVoRyUhEDUVyM=
+  dependencies:
+    node-fetch "2.1.2"
+    whatwg-fetch "2.0.4"
+
 cross-spawn@6.0.5, cross-spawn@^6.0.0, cross-spawn@^6.0.5:
   version "6.0.5"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-6.0.5.tgz#4a5ec7c64dfae22c3a14124dbacdee846d80cbc4"
@@ -4277,6 +4285,13 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.6:
   version "4.1.11"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.1.11.tgz#0e8bdfe4d1ddb8854d64e04ea7c00e2a026e5658"
   integrity sha1-Dovf5NHduIVNZOBOp8AOKgJuVlg=
+
+graphql-request@^1.8.2:
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/graphql-request/-/graphql-request-1.8.2.tgz#398d10ae15c585676741bde3fc01d5ca948f8fbe"
+  integrity sha512-dDX2M+VMsxXFCmUX0Vo0TopIZIX4ggzOtiCsThgtrKR4niiaagsGTDIHj3fsOMFETpa064vzovI+4YV4QnMbcg==
+  dependencies:
+    cross-fetch "2.2.2"
 
 growly@^1.3.0:
   version "1.3.0"
@@ -6450,6 +6465,11 @@ no-case@^2.2.0:
   integrity sha512-rmTZ9kz+f3rCvK2TD1Ue/oZlns7OGoIWP4fc3llxxRXlOkHKoWPPWJOfFYpITabSow43QJbRIoHQXtt10VldyQ==
   dependencies:
     lower-case "^1.1.1"
+
+node-fetch@2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.1.2.tgz#ab884e8e7e57e38a944753cec706f788d1768bb5"
+  integrity sha1-q4hOjn5X44qUR1POxwb3iNF2i7U=
 
 node-fetch@^1.0.1:
   version "1.7.3"
@@ -9925,6 +9945,11 @@ whatwg-encoding@^1.0.1, whatwg-encoding@^1.0.3, whatwg-encoding@^1.0.5:
   integrity sha512-b5lim54JOPN9HtzvK9HFXvBma/rnfFeqsic0hSpjtDbVxR3dJKLc+KB4V6GgiGOvl7CY/KNh8rxSo9DKQrnUEw==
   dependencies:
     iconv-lite "0.4.24"
+
+whatwg-fetch@2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-2.0.4.tgz#dde6a5df315f9d39991aa17621853d720b85566f"
+  integrity sha512-dcQ1GWpOD/eEQ97k66aiEVpNnapVj90/+R+SXTPYGHpYBBypfKJEQjLrvMZ7YXbKm21gXd4NcuxUTjiv1YtLng==
 
 whatwg-fetch@3.0.0, whatwg-fetch@>=0.10.0:
   version "3.0.0"

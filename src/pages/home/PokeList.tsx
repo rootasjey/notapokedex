@@ -45,11 +45,16 @@ export default class PokeList extends Component {
     )
   }
 
-  private _onRenderCell(poke: PokemonLineEntry, index?: number, isScrolling?: boolean): JSX.Element {
+  private _onRenderCell(poke: PokemonLineEntry): JSX.Element {
     return (
       <Row>
-        <StyledLink to={`/pokemon/${poke.id}`} data-is-focusable={true}>
+        <StyledLink
+          to={ `/pokemon/${poke.id}` }
+          data-is-focusable={ true }
+          onClick={ () => store.setPartialPokemon(poke) } >
+
             #{poke.id + 1} - {poke.name}
+
         </StyledLink>
 
         <div onClick={() => { toggleBookmark(poke) }}>

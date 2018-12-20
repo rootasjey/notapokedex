@@ -19,7 +19,7 @@ export default class PokeCard extends Component<ICardProps, {}> {
   }
 
   render() {
-    const pokemon = store.selectedItem;
+    const pokemon = store.selectedPokemon;
 
     return(
       <StyledContainer>
@@ -42,10 +42,6 @@ export default class PokeCard extends Component<ICardProps, {}> {
 
 const StyledContainer = styled.div`
   padding-top: 60px;
-`;
-
-const StyledPageTitle = styled.h1`
-  text-align: center;
 `;
 
 const StyledPageSubTitle = styled.h1`

@@ -1,5 +1,7 @@
 import { action, computed, observable } from 'mobx';
 
+import { request } from 'graphql-request';
+
 class Store {
   @action
   /**
@@ -13,8 +15,8 @@ class Store {
     this.bookmarks.set(pokemon.id, pokemon);
     this.bookmarksChanged = true;
 
-    this.selectedItem = {
-      ...this.selectedItem,
+    this.selectedPokemon = {
+      ...this.selectedPokemon,
       ...{ isBookmarked: this.isBookmarked(pokemon) }
     };
 
@@ -59,14 +61,39 @@ class Store {
       const data = await fetch(url, { mode: 'cors' });
       const pokemon: Pokemon = await data.json();
 
-      this.selectedItem = {
+      this.selectedPokemon = {
         ...pokemon,
         ...{ isBookmarked: this.isBookmarked(pokemon.id - 1) }
       };
 
-      // console.log(pokemon);
-
     } catch (error) { }
+  }
+
+  @action
+  public async fetchTweets(pokemonName: string) {
+    const url = 'https://whale-irloxrdtbf.now.sh/';
+
+    const query = `{
+        tweets(pokemon: "${pokemonName}") {
+          statuses {
+            created_at
+            id_str
+            text
+            user {
+              name
+              profile_image_url
+              screen_name
+            }
+          }
+        }
+      }`;
+
+    try {
+      const data: TweetServiceResponseData = await request(url, query);
+
+      this.tweets = data.tweets.statuses;
+
+    } catch (error) {}
   }
 
   @action
@@ -106,8 +133,8 @@ class Store {
     this.bookmarks.delete(pokemon.id);
     this.bookmarksChanged = true;
 
-    this.selectedItem = {
-      ...this.selectedItem,
+    this.selectedPokemon = {
+      ...this.selectedPokemon,
       ...{ isBookmarked: this.isBookmarked(pokemon) }
     };
 
@@ -120,6 +147,14 @@ class Store {
    */
   public setOffBookmarksChanged() {
     this.bookmarksChanged = false;
+  }
+
+  /**
+   * Set partial pokemon data from clicked link.
+   */
+  public setPartialPokemon(pokemonLineEntry: PokemonLineEntry) {
+    const { id, name } = pokemonLineEntry;
+    this.selectedPokemon = { ...this.selectedPokemon, ...{ id, name }}
   }
 
   @action
@@ -148,10 +183,13 @@ class Store {
 
   private bookmarksLoaded: boolean = false;
 
-  @observable public focusedItem?: PokemonLineEntry;
+  @observable public focusedPokemon?: PokemonLineEntry;
+
   @observable public list: PokemonLineEntry[] = [];
+
   @observable public searchInput: string = '';
-  @observable public selectedItem: Pokemon = {
+
+  @observable public selectedPokemon: Pokemon = {
     abilities: [],
     id: -1,
     isBookmarked: false,
@@ -175,6 +213,8 @@ class Store {
     ],
     weight: 0,
   };
+
+  @observable public tweets: Tweet[] = [];
 }
 
 export const store = new Store();

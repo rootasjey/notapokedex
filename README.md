@@ -18,9 +18,12 @@ A simple react pokedex app for test purposes.
 ## tools
 
 * [fabric](https://developer.microsoft.com/en-us/fabric)
+* [fontawesome](https://fontawesome.com)
+* [graphql-request](https://github.com/prisma/graphql-request)
 * [mobx](https://mobx.js.org/index.html)
 * [react](http://reactjs.org)
 * [react-router](https://reacttraining.com/react-router/web/guides/quick-start)
+* [styled-components](https://www.styled-components.com)
 * [typescript](http://typescriptlang.org)
 
 ## Licence
