@@ -33,7 +33,7 @@ class Store {
 
   @action
   public async fetchAverageStats(typesEntries: TypeEntry[]) {
-    const url = 'https://pokeverse-aganrlqivk.now.sh';
+    const url = 'https://pokestats-hsesykzqgo.now.sh';
 
     const typesNames = typesEntries
       .map((entry) => {
