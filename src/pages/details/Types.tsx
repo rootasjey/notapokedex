@@ -97,6 +97,10 @@ const PokeType = styled.div`
     background-color: #9E9E9E;
   }
 
+  &.steel {
+    background-color: #7f8fa6;
+  }
+
   &.water {
     background-color: #686de0;
   }

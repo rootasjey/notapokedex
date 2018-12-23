@@ -16,10 +16,30 @@ library.add(faBookmark, faBookmarked);
 @observer
 export default class PokeList extends Component {
   private myList: any;
+  private resizedHandler: EventListener;
+
+  public state: {
+    height: number;
+  }
 
   constructor(props: any) {
     super(props);
     this.myList = React.createRef();
+
+    this.state = { height: window.innerHeight };
+    this.resizedHandler = this.onResize.bind(this);
+  }
+
+  componentDidMount() {
+    window.addEventListener('resize', this.resizedHandler)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.resizedHandler);
+  }
+
+  onResize() {
+    this.setState({ height: window.innerHeight - 100 });
   }
 
   public render() {
@@ -28,6 +48,12 @@ export default class PokeList extends Component {
       this.myList.current.forceUpdate();
       store.setOffBookmarksChanged();
     }
+
+    const ListDivContainer = styled.div`
+      overflow: auto;
+      margin: auto;
+      max-height: ${ this.state.height }px;
+    `;
 
     const items = store.filteredList.length > 0 ? store.filteredList : store.list;
     const noMatch = store.searchInput.length > 0 && store.filteredList.length === 0;
@@ -83,12 +109,6 @@ function EmptyView(props: any) {
 
 const CenteredDiv = styled.div`
   margin: auto;
-`;
-
-const ListDivContainer = styled.div`
-  overflow: auto;
-  margin: auto;
-  max-height: 500px;
 `;
 
 const StyledCenteredContent = styled.div`
