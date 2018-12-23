@@ -4,9 +4,10 @@ A simple react pokedex app for test purposes.
 
 ## screenshot
 
-![screenshot1.png](screenshot1.png)
-
-![screenshot2.png](screenshot2.png)
+| Home | Details |
+|------|---------|
+| ![home.png](screenshots/home.png)             | ![details.png](screenshots/details.png) |
+| ![bookmarks.png](/screenshots/bookmarks.png)  | ![tweets.png](/screenshots/tweets.png) |
 
 ## development
 
