@@ -5,7 +5,7 @@ import styled                           from "styled-components";
 
 import { Abilities }                    from './Abilities';
 import { Caroussel }                    from './Caroussel';
-import { Stats }                        from './Stats';
+import Stats                            from './Stats';
 import { Types }                        from './Types';
 
 @observer
@@ -52,4 +52,3 @@ const StyledPageSubTitle = styled.h1`
 export interface ICardProps {
   id: number;
 }
-

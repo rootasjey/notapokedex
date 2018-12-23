@@ -20,7 +20,6 @@ interface Pokemon {
   weight: number;
 }
 
-
 interface PokemonLineEntry {
   id: number;
   name: string;
@@ -37,6 +36,34 @@ interface PokeAPIListData {
 interface PokeAPISimplePoke {
   name: string;
   url: string;
+}
+
+interface PokeStatsResponse {
+  averageStats: PokeStatsResponseData;
+}
+
+interface PokeStatsResponseData {
+  avg: AvgStats;
+  meta: AvgStatsMeta;
+
+  pokemonCount: number;
+
+  types: string[];
+}
+
+interface AvgStatsMeta {
+  lastUpdated: string;
+}
+
+interface AvgStats {
+  [key: string]: number;
+
+  attack: number;
+  defense: number;
+  hp: number;
+  specialAttack: number;
+  specialDefense: number;
+  speed: number;
 }
 
 interface Sprites {

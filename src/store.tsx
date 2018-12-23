@@ -32,6 +32,39 @@ class Store {
   }
 
   @action
+  public async fetchAverageStats(typesEntries: TypeEntry[]) {
+    const url = 'https://pokeverse-aganrlqivk.now.sh';
+
+    const typesNames = typesEntries
+      .map((entry) => {
+        return entry.type.name.toUpperCase();
+      });
+
+    const queryParams = typesNames.length > 1 ?
+      `type1: ${ typesNames[0] } type2: ${ typesNames[1] }` :
+      `type1: ${ typesNames[0] }`;
+
+    const query = `{
+      averageStats(${ queryParams }) {
+        avg {
+          attack
+          defense
+          hp
+          specialAttack
+          specialDefense
+          speed
+        }
+      }
+    }`;
+
+    try {
+      const data: PokeStatsResponse = await request(url, query);
+      this.avgStats = data.averageStats.avg;
+
+    } catch (error) {}
+  }
+
+  @action
   public async fetchPokedex() {
     try {
       const rawData = await fetch(this.baseURL, { mode: 'cors' });
@@ -168,6 +201,15 @@ class Store {
     });
   };
 
+  @observable public avgStats: AvgStats = {
+    attack        : 0,
+    defense       : 0,
+    hp            : 0,
+    specialAttack : 0,
+    specialDefense: 0,
+    speed         : 0,
+  };
+
   /**
    * 'https://pokeapi.co/api/v2/pokemon/'
    */
@@ -191,17 +233,17 @@ class Store {
 
   @observable public selectedPokemon: Pokemon = {
     abilities: [],
-    id: -1,
+    id          : -1,
     isBookmarked: false,
-    name: '',
+    name        : '',
     sprites: {
-      back_default: '',
-      back_female: '',
-      back_shiny: '',
-      back_shiny_female: '',
-      front_default: '',
-      front_female: '',
-      front_shiny: '',
+      back_default      : '',
+      back_female       : '',
+      back_shiny        : '',
+      back_shiny_female : '',
+      front_default     : '',
+      front_female      : '',
+      front_shiny       : '',
       front_shiny_female: '',
     },
     stats: [],
