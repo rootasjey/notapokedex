@@ -34,9 +34,12 @@ export function Caroussel(props?: any): JSX.Element {
 }
 
 const CarousselContainer = styled.div`
+  background-color: #95a5a6;
+  display: flex;
+  justify-content: center;
+
   overflow-x: scroll;
   white-space: nowrap;
-  background-color: #95a5a6;
 `;
 
 const StyledImage = styled(Image)`

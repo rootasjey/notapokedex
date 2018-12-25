@@ -5,33 +5,45 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 
 import { FocusZone, FocusZoneDirection }  from 'office-ui-fabric-react/lib/FocusZone';
 import { Link }                           from "react-router-dom";
-import { List }                           from 'office-ui-fabric-react/lib/List';
+import { List, IPage }                           from 'office-ui-fabric-react/lib/List';
 import { observer }                       from 'mobx-react';
-import React, { Component }               from "react";
+import React, { Component, RefObject }    from "react";
 import { store }                          from '../../store';
 import styled                             from 'styled-components';
+
+import { Collection } from 'react-virtualized';
+import 'react-virtualized/styles.css';
 
 library.add(faBookmark, faBookmarked);
 
 @observer
 export default class PokeList extends Component {
-  private myList: any;
+  private list: RefObject<List>;
+
+  private lastIndex: number = 0;
+
   private resizedHandler: EventListener;
 
   public state: {
     height: number;
+    scrollTo: number,
   }
 
   constructor(props: any) {
     super(props);
-    this.myList = React.createRef();
 
-    this.state = { height: window.innerHeight };
+    this.list = React.createRef();
+
+    this.state = {
+      height: window.innerHeight,
+      scrollTo: store.selectedPokemon.id,
+    };
+
     this.resizedHandler = this.onResize.bind(this);
   }
 
   componentDidMount() {
-    window.addEventListener('resize', this.resizedHandler)
+    window.addEventListener('resize', this.resizedHandler);
   }
 
   componentWillUnmount() {
@@ -44,9 +56,28 @@ export default class PokeList extends Component {
 
   public render() {
     // NOTE: By-pass to force rows to update when necessary.
-    if (store.bookmarksChanged && this.myList.current) {
-      this.myList.current.forceUpdate();
-      store.setOffBookmarksChanged();
+    if (this.list.current) {
+      if (store.bookmarksChanged) {
+        // this.list.current.forceUpdate();
+        store.setOffBookmarksChanged();
+      }
+
+      if (this.list.current.getStartItemIndexInView() > 0) {
+        this.lastIndex = this.list.current.getStartItemIndexInView();
+      }
+
+      // Restore scroll
+      // NOTE: Hack to restore scroll properly
+      // Issue with List here:
+      // https://github.com/OfficeDev/office-ui-fabric-react/issues/5551
+      setTimeout(() => {
+        // console.log(store.selectedPokemon.id);
+        if (this.list.current) {
+          // this.list.current.scrollToIndex(store.selectedPokemon.id);
+          console.log(`scrolled to ${this.lastIndex}`);
+          this.list.current.scrollToIndex(this.lastIndex);
+        }
+      }, 100);
     }
 
     const ListDivContainer = styled.div`
@@ -64,7 +95,9 @@ export default class PokeList extends Component {
 
         <FocusZone direction={FocusZoneDirection.vertical} hidden={noMatch} >
           <ListDivContainer data-is-scrollable={true} >
-            <List ref={this.myList} items={items} onRenderCell={this._onRenderCell} />
+            <List ref={this.list} items={items} onRenderCell={this._onRenderCell}
+             />
+            {/* onPagesUpdated={(pages: IPage[]) => this.onPagesUpdated(pages)} */}
           </ListDivContainer>
         </FocusZone>
       </StyledCenteredContent>
