@@ -7,6 +7,7 @@ import Abilities              from './Abilities';
 import Caroussel              from './Caroussel';
 import Stats                  from './Stats';
 import Types                  from './Types';
+import { Typography }         from "@material-ui/core";
 
 @observer
 export default class PokeCard extends Component<ICardProps, {}> {
@@ -23,7 +24,9 @@ export default class PokeCard extends Component<ICardProps, {}> {
 
     return(
       <StyledContainer>
-        <StyledPageSubTitle>#{ pokemon.id }</StyledPageSubTitle>
+        <Typography variant="h3" >
+          #{pokemon.id}
+        </Typography>
 
         <Caroussel
           pokemonName={pokemon.name}
@@ -42,6 +45,7 @@ export default class PokeCard extends Component<ICardProps, {}> {
 
 const StyledContainer = styled.div`
   padding-top: 60px;
+  text-align: center;
 `;
 
 const StyledPageSubTitle = styled.h1`

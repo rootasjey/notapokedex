@@ -77,7 +77,7 @@ const styles: StyleRulesCallback = (theme: Theme)  => ({
 });
 
 @observer
-class Home extends Component<{ classes: any}, { showPanel: boolean; }> {
+class Home extends Component<{ classes: any, history: any}, { showPanel: boolean; }> {
   constructor(props: any) {
     super(props);
     this.state = { showPanel: false };
@@ -134,7 +134,7 @@ class Home extends Component<{ classes: any}, { showPanel: boolean; }> {
 
         <PokeList />
 
-        <Bookmarks />
+        <Bookmarks history={this.props.history} />
       </div>
     );
   }

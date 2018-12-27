@@ -1,29 +1,42 @@
-import { faTimes }          from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon }  from '@fortawesome/react-fontawesome';
-import { library }          from '@fortawesome/fontawesome-svg-core';
-
 import styled               from 'styled-components';
 
 import { observer }         from 'mobx-react';
 import { store }            from '../../store';
 
-import { Link }             from 'react-router-dom';
 import React, { Component } from 'react';
-
 
 import {
   Drawer,
   IconButton,
   Typography,
+  Tooltip,
+  Chip,
+  Avatar,
+  AppBar,
+  Toolbar,
 } from '@material-ui/core';
+
+import {
+  withStyles,
+  Theme,
+  StyleRulesCallback,
+} from '@material-ui/core/styles';
 
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
 
-library.add(faTimes);
+const styles: StyleRulesCallback = (theme: Theme) => ({
+  chipsRoot: {
+    maxWidth: 150,
+    padding: 20,
+  },
+  chip: {
+    marginBottom: 10,
+  },
+});
 
 @observer
-export default class Bookmarks extends Component<{}, {}> {
+class Bookmarks extends Component<{ classes: any, history: any }, {}> {
 
   constructor(props: any) {
     super(props);
@@ -31,7 +44,9 @@ export default class Bookmarks extends Component<{}, {}> {
 
   render() {
     const bookmarks = store.bookmarks;
-    const content = getContent(bookmarks);
+    const content = this.getContent(bookmarks);
+
+    const classes = this.props.classes;
 
     return (
       <Drawer
@@ -40,93 +55,75 @@ export default class Bookmarks extends Component<{}, {}> {
         onClose={() => { store.setBookmarksPanelState(false) }}>
 
         <StyledContainer>
-          <StyledHeader>
-            <Typography variant="h4" color="inherit">
-              { `Favorites - ${ store.bookmarks.size }` }
-            </Typography>
-          </StyledHeader>
+          <AppBar position="sticky">
+            <Toolbar>
+              <Typography variant="h4" color="inherit">
+                {`Favorites - ${store.bookmarks.size}`}
+              </Typography>
+            </Toolbar>
+          </AppBar>
 
           <StyledSubHeader>
-            <IconButton aria-label="delete"
-              onClick={ () => { store.clearBookmarks() } }
-            >
-              <DeleteIcon />
-            </IconButton>
+            <Tooltip title="Clear bookmarks">
+              <IconButton aria-label="delete"
+                onClick={ () => { store.clearBookmarks() } }
+              >
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
 
-            <IconButton aria-label="close"
-              onClick={ () => { store.setBookmarksPanelState(false) } }
-            >
-              <CloseIcon />
-            </IconButton>
+            <Tooltip title="Close panel">
+              <IconButton aria-label="close"
+                onClick={ () => { store.setBookmarksPanelState(false) } }
+              >
+                <CloseIcon />
+              </IconButton>
+            </Tooltip>
           </StyledSubHeader>
 
-          <StyledBookmarksContent>
+          <div className={classes.chipsRoot}>
             { content }
-          </StyledBookmarksContent>
+          </div>
         </StyledContainer>
       </Drawer>
     );
   }
-}
 
-function getContent(bookmarks: Map<number, PokemonLineEntry>) {
-  if (bookmarks.size === 0) {
-    return (
-      <div>
-        Nothing bookmarked yet.
+  private getContent(bookmarks: Map<number, PokemonLineEntry>) {
+    if (bookmarks.size === 0) {
+      return (
+        <div>
+          Nothing bookmarked yet.
       </div>
-    );
+      );
+    }
+
+    const classes = this.props.classes;
+
+    return [...bookmarks].map(([key, poke]) => {
+      return (
+        <Chip
+          avatar={<Avatar>{poke.id + 1}</Avatar>}
+          className={classes.chip}
+          key={key}
+          label={poke.name}
+          onClick={() => { this.goTo(poke) }}
+          onDelete={() => { store.removeBookmark(poke) }}
+        />
+      )
+    });
   }
 
-  return [...bookmarks].map(([key, poke]) => {
-    return (
-      <StyledBookmark key={key} >
-        <StyledLink
-          to={`/pokemon/${poke.id}`}
-          onClick={() => store.setPartialPokemon(poke)} >
-
-          #{poke.id + 1} - {poke.name}
-
-        </StyledLink>
-
-        <StyledBookmarkIconContainer onClick={() => store.removeBookmark(poke)}>
-          <StyledBookmarkIcon icon="times" />
-        </StyledBookmarkIconContainer>
-      </StyledBookmark>
-    )
-  });
+  private goTo(poke: PokemonLineEntry) {
+    store.setPartialPokemon(poke);
+    this.props.history.push(`/pokemon/${poke.id}`)
+  }
 }
+
+export default withStyles(styles)(Bookmarks);
 
 const StyledContainer = styled.div`
   min-width: 100px;
-`;
-
-const StyledBookmark = styled.div`
-  display: flex;
-  justify-content: space-between;
-
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-  border-bottom-color: #eee;
-
-  padding: 10px;
-  transition: .3s;
-
-  &:hover {
-    color: white;
-    background-color: #ff7979;
-    transition: .3s;
-  }
-`;
-
-const StyledBookmarksContent = styled.div`
-  padding: 20px;
-`;
-
-const StyledHeader = styled.div`
-  background-color: #eb4d4b;
-  color: white;
-  padding: 20px;
 `;
 
 const StyledSubHeader = styled.div`
@@ -135,34 +132,4 @@ const StyledSubHeader = styled.div`
 
   padding-top: 10px;
   padding-bottom: 10px;
-`;
-
-const StyledBookmarkIcon = styled(FontAwesomeIcon)`
-  display: inline-block;
-  cursor: pointer;
-  transition: .5s;
-
-  &:hover {
-    transform: scale(1.2);
-    transition: .5s;
-  }
-`;
-
-const StyledBookmarkIconContainer = styled.div`
-  display: inline-block;
-`;
-
-const StyledLink = styled(Link)`
-  color: inherit;
-  text-decoration: none;
-  transition: .5s;
-
-  @:visited {
-    color: inherit;
-  }
-
-  &:hover {
-    transform: scale(1.1);
-    transition: .5s;
-  }
 `;

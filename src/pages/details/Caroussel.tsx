@@ -60,6 +60,9 @@ const CarousselContainer = styled.div`
   display: flex;
   justify-content: center;
 
+  margin-top: 30px;
+  margin-bottom: 30px;
+
   overflow-x: scroll;
   white-space: nowrap;
 `;

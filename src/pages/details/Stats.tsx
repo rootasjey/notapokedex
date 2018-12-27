@@ -10,7 +10,7 @@ import { store }              from '../../store';
 import { getBgColor }         from '../../utils/colors';
 import { toPascalName }       from '../../utils/strings';
 
-import { Tooltip }            from '@material-ui/core';
+import { Tooltip, Typography } from '@material-ui/core';
 
 interface IProps {
   stats: StatEntry[];
@@ -70,6 +70,7 @@ export default class Stats extends Component<IProps, {}> {
         margin-top: -5px;
         margin-left: -5px;
         width: ${percent}%;
+        max-width: 220px;
         background-color: ${bgColor};
         transition: .3s;
 
@@ -81,19 +82,27 @@ export default class Stats extends Component<IProps, {}> {
 
       return (
         <StyledStatLine key={index}>
-          <StyledStatName>{stat.name}: </StyledStatName>
+          <StyledStatName>
+            <Typography>
+              {stat.name}:
+            </Typography>
+          </StyledStatName>
 
           <StyledBackgroundRect>
             <Tooltip title={`${percent}% from average`} id={ariaDescPercent} placement="top" >
               <ForegroundRect aria-describedby={ariaDescPercent}>
-                <div>{stat.value}</div>
+                <Typography color="inherit">
+                  {stat.value}
+                </Typography>
               </ForegroundRect>
             </Tooltip>
           </StyledBackgroundRect>
 
           <Tooltip title={`Average ${stat.name}`} id={ariaDescAvg} placement="top" >
             <StyledStatAvg aria-describedby={ariaDescAvg}>
-              { stat.avg }
+              <Typography>
+                {stat.avg}
+              </Typography>
             </StyledStatAvg>
           </Tooltip>
         </StyledStatLine>
@@ -118,10 +127,10 @@ const StyledBackgroundRect = styled.div`
 `;
 
 const StyledStatsContainer = styled.div`
-  max-width: 70%;
+  max-width: 50%;
   margin: auto;
   margin-top: 50px;
-  padding-bottom: 60px;
+  margin-bottom: 60px;
 `;
 
 const StyledStatName = styled.div`
