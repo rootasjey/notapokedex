@@ -9,6 +9,25 @@ interface Ability {
   url: string;
 }
 
+interface LikeResponse {
+  like: Controversy;
+}
+
+interface DislikeResponse {
+  dislike: Controversy;
+}
+
+interface ControversyResponse {
+  controversy: Controversy;
+}
+
+interface Controversy {
+  dislikes: number;
+  id: number;
+  likes: number;
+  name: string;
+}
+
 interface Pokemon {
   abilities: AbilityEntry[];
   id: number;

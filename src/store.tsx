@@ -31,10 +31,35 @@ class Store {
     localStorage.clear();
   }
 
+  /**
+ * Mutate Pokemon's dislikes' count.
+ * @param pokemonId Pokemon's id from 1 to 949.
+ */
+  @action
+  public async dislike(pokemonId: number) {
+    const queryParams = `pokemonId: ${pokemonId}`;
+
+    const mutation = `mutation {
+      dislike( ${queryParams} ) {
+        id
+        name
+        likes
+        dislikes
+      }
+    }`;
+
+    try {
+      const data: DislikeResponse = await request(this.pokeStatssURL, mutation);
+      this.controversy = data.dislike;
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
   @action
   public async fetchAverageStats(typesEntries: TypeEntry[]) {
-    const url = 'https://pokestats-hsesykzqgo.now.sh';
-
     const typesNames = typesEntries
       .map((entry) => {
         return entry.type.name.toUpperCase();
@@ -58,10 +83,36 @@ class Store {
     }`;
 
     try {
-      const data: PokeStatsResponse = await request(url, query);
+      const data: PokeStatsResponse = await request(this.pokeStatssURL, query);
       this.avgStats = data.averageStats.avg;
 
     } catch (error) {}
+  }
+
+  /**
+   * This API uses Pokemons' id from 1 to 949.
+   * @param pokemonId Pokemon's id from 1 to 949.
+   */
+  @action
+  public async fetchControversy(pokemonId: number) {
+    const queryParams = `pokemonId: ${pokemonId}`;
+
+    const query = `query {
+      controversy( ${queryParams} ) {
+        id
+        name
+        likes
+        dislikes
+      }
+    }`;
+
+    try {
+      const data: ControversyResponse = await request(this.pokeStatssURL, query);
+      this.controversy = data.controversy;
+
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   @action
@@ -82,6 +133,7 @@ class Store {
 
     } catch (error) {
       this.list = [];
+      console.error(error);
     }
   }
 
@@ -100,7 +152,9 @@ class Store {
         ...{ isBookmarked: this.isBookmarked(pokemon.id - 1) }
       };
 
-    } catch (error) { }
+    } catch (error) {
+      console.error(error);
+     }
   }
 
   @action
@@ -127,7 +181,9 @@ class Store {
 
       this.tweets = data.tweets.statuses;
 
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   @action
@@ -137,6 +193,32 @@ class Store {
     }
 
     return this.bookmarks.has(pokemon.id);
+  }
+
+  /**
+   * Mutate Pokemon's likes' count.
+   * @param pokemonId Pokemon's id from 1 to 949.
+   */
+  @action
+  public async like(pokemonId: number) {
+    const queryParams = `pokemonId: ${pokemonId}`;
+
+    const mutation = `mutation {
+      like( ${queryParams} ) {
+        id
+        name
+        likes
+        dislikes
+      }
+    }`;
+
+    try {
+      const data: LikeResponse = await request(this.pokeStatssURL, mutation);
+      this.controversy = data.like;
+
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   @action
@@ -230,6 +312,8 @@ class Store {
    */
   public baseURL: string = 'https://pokeapi.co/api/v2/pokemon/';
 
+  private pokeStatssURL: string = 'https://pokestats-bceyweotwd.now.sh/';
+
   @observable public bookmarks = new Map<number, PokemonLineEntry>([]);
 
   /**
@@ -240,9 +324,16 @@ class Store {
 
   private bookmarksLoaded: boolean = false;
 
-  @observable public isBookmarsPanelOpen: boolean = false;
+  @observable controversy: Controversy = {
+    id        : -1,
+    likes     : 0,
+    name      : '',
+    dislikes  : 0,
+  };
 
   @observable public focusedPokemon?: PokemonLineEntry;
+
+  @observable public isBookmarsPanelOpen: boolean = false;
 
   @observable public list: PokemonLineEntry[] = [];
 

@@ -6,6 +6,7 @@ import styled                   from 'styled-components';
 
 import PokeCard                 from './PokeCard';
 import Tweets                   from './Tweets';
+import Controversy              from './Controversy';
 
 import { ArrowBack, Favorite }  from '@material-ui/icons';
 
@@ -14,6 +15,7 @@ import {
   IconButton,
   Toolbar,
   Typography,
+  Tooltip,
 } from '@material-ui/core';
 
 import {
@@ -71,9 +73,11 @@ class Details extends Component<{ classes: any }, {}> {
       <StyledCenteredDiv className={classes.root}>
         <AppBar position="sticky" >
           <Toolbar>
-            <IconButton onClick={ () => { this.goBack() }} color="inherit" >
-              <ArrowBack color="inherit" />
-            </IconButton>
+            <Tooltip title="Go back">
+              <IconButton onClick={ () => { this.goBack() }} color="inherit" >
+                <ArrowBack color="inherit" />
+              </IconButton>
+            </Tooltip>
 
             <div className={classes.grow} />
 
@@ -83,14 +87,18 @@ class Details extends Component<{ classes: any }, {}> {
 
             <div className={classes.grow} />
 
-            <IconButton onClick={() => { this.toggleBookmark(pokemon) }} >
-              <Favorite color={ poke.isBookmarked ? "secondary" : "inherit" } />
-            </IconButton>
+            <Tooltip title="Add to favorites">
+              <IconButton onClick={() => { this.toggleBookmark(pokemon) }} >
+                <Favorite color={ poke.isBookmarked ? "secondary" : "inherit" } />
+              </IconButton>
+            </Tooltip>
 
           </Toolbar>
         </AppBar>
 
         <PokeCard id={id} />
+
+        <Controversy />
 
         <Tweets />
       </StyledCenteredDiv>

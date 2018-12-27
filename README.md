@@ -18,12 +18,13 @@ You can test the app at the available URL at the top of this page.
 * Browse Pokemons list
 * Search a Pokemon by name or by id
 * Compare a Pokemon's statistics with all others Pokemons of the same type(s)
-* View recent Tweet about a Pokemon
+* View recent Tweets about a Pokemon
+* Like or dislike a Pokemon
 
 ## development
 
-* Clone the repo with `git clone https://github.com/rootasjey/catchthemall`
-* Go to the cloned repo with `cd catchthemall`
+* Clone the repo with `git clone https://github.com/rootasjey/pokedex`
+* Go to the cloned repo with `cd pokedex`
 * Install dependencies with `yarn` or `npm install`
 * Run the app with `yarn run start` or `npm start`
 

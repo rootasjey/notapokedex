@@ -22,6 +22,7 @@ import {
   Theme,
   StyleRulesCallback,
 } from '@material-ui/core/styles';
+import { Tooltip } from '@material-ui/core';
 
 const styles: StyleRulesCallback = (theme: Theme)  => ({
   favoriteIcon: {
@@ -100,9 +101,16 @@ class Home extends Component<{ classes: any, history: any}, { showPanel: boolean
       <div className={classes.root}>
         <AppBar position="sticky" >
           <Toolbar>
-            <Typography variant="h6" color="inherit">
-              Pokedex
-            </Typography>
+            <Tooltip title="Scroll to top">
+              <Typography
+                variant="h6"
+                color="inherit"
+                onClick={ () => {window.scrollTo(0, 0)}}
+              >
+
+                Pokedex
+              </Typography>
+            </Tooltip>
 
             <div className={classes.grow} />
 
@@ -122,13 +130,15 @@ class Home extends Component<{ classes: any, history: any}, { showPanel: boolean
               />
             </div>
 
-            <IconButton
-              onClick={ () => { store.setBookmarksPanelState(true) } }
-              className={ classes.favoriteIcon }
-              aria-label="All favorites">
+            <Tooltip title="Open favorites">
+              <IconButton
+                onClick={ () => { store.setBookmarksPanelState(true) } }
+                className={ classes.favoriteIcon }
+                aria-label="All favorites">
 
-              <FavoriteIcon color="secondary" />
-            </IconButton>
+                <FavoriteIcon color="secondary" />
+              </IconButton>
+            </Tooltip>
           </Toolbar>
         </AppBar>
 
