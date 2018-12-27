@@ -125,7 +125,12 @@ function EmptyView(props: any): JSX.Element {
   const hidden: boolean = props.hidden;
 
   if (hidden) {
-    return <StyledCenterDiv>No match has been found :(</StyledCenterDiv>;
+    return (
+      <StyledCenterDiv>
+        <Typography>
+          No match has been found :(
+        </Typography>
+      </StyledCenterDiv>);
   }
 
   return <span></span>;

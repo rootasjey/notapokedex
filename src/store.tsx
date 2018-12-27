@@ -202,9 +202,18 @@ class Store {
   }
 
   @computed public get filteredList(): PokemonLineEntry[] {
-    return this.list.filter((pokemonLineEntry) => {
+    const list = this.list.filter((pokemonLineEntry) => {
       return pokemonLineEntry.name.indexOf(this.searchInput) > -1;
     });
+
+    const id = parseInt(this.searchInput, 10) - 1;
+
+    if (isFinite(id) && id > -1 && id < this.list.length) {
+      const idMatch = this.list[id];
+      if (idMatch) { list.push(idMatch); }
+    }
+
+    return list;
   };
 
   @observable public avgStats: AvgStats = {
