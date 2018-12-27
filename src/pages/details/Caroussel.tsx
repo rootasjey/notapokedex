@@ -1,28 +1,48 @@
-import { IImageProps, Image, ImageFit } from 'office-ui-fabric-react/lib/Image';
-import React                            from 'react';
-import styled                           from 'styled-components';
+import React  from 'react';
+import styled from 'styled-components';
 
-export function Caroussel(props?: any): JSX.Element {
+import {
+  Card,
+  CardActionArea,
+  CardMedia,
+} from '@material-ui/core';
+
+import {
+  Theme,
+  StyleRulesCallback,
+  withStyles,
+} from '@material-ui/core/styles';
+
+const styles: StyleRulesCallback = (theme: Theme) => ({
+  card: {
+    maxWidth: 345,
+    minWidth: 150,
+    padding: '10px',
+  },
+  media: {
+    height: 140,
+  },
+});
+
+function Caroussel(props?: any): JSX.Element {
+  const { classes } = props;
   const pokemonName: string = props.pokemonName;
   const sprites: Sprites = props.sprites;
-  const items: any[] = [];
-
-  const imageProps: Partial<IImageProps> = {
-    imageFit: ImageFit.centerCover,
-    width: 200,
-    height: 200,
-  };
+  const items: JSX.Element[] = [];
 
   for (const [key, val] of Object.entries(sprites)) {
     if (!val) { continue; }
 
     items.push(
-      <StyledImage
-        key={key}
-        {...imageProps}
-        src={val}
-        alt={pokemonName}
-      />
+      <Card className={classes.card} key={key} square={true} >
+        <CardActionArea>
+          <CardMedia
+            className={classes.media}
+            image={val}
+            title={pokemonName}
+          />
+        </CardActionArea>
+      </Card>
     );
   }
 
@@ -33,24 +53,13 @@ export function Caroussel(props?: any): JSX.Element {
   );
 }
 
+export default withStyles(styles)(Caroussel);
+
 const CarousselContainer = styled.div`
-  background-color: #95a5a6;
+  background-color: rgba(0,0,0,0.3);
   display: flex;
   justify-content: center;
 
   overflow-x: scroll;
   white-space: nowrap;
-`;
-
-const StyledImage = styled(Image)`
-  background-color: #95a5a6;
-  display: inline-block;
-  margin: 5px 5px;
-  cursor: pointer;
-  transition: .5s;
-
-  &:hover {
-    background-color: #7f8c8d;
-    transition: .5s;
-  }
 `;

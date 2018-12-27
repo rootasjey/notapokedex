@@ -1,22 +1,44 @@
 import React  from 'react';
 import styled from 'styled-components';
 
-export function Abilities(props: any) {
+import { Chip, Typography } from '@material-ui/core';
+
+import {
+  StyleRulesCallback,
+  Theme,
+  withStyles,
+} from '@material-ui/core/styles';
+
+const styles: StyleRulesCallback = (theme: Theme) => ({
+  chip: {
+    margin: '10px',
+  },
+});
+
+function Abilities(props: any) {
+  const classes = props.classes;
   const abilities: AbilityEntry[] = props.abilities;
 
   const items = abilities.map((entry, index) =>
-    <div key={index}>
-      {entry.ability.name}
-    </div>
+    <Chip
+      className={classes.chip}
+      key={index}
+      label={ entry.ability.name }
+    />
   );
 
   return (
     <StyledContainer>
-      <h2>abilities</h2>
+      <Typography variant="h3">
+        Abilities
+      </Typography>
+
       {items}
     </StyledContainer>
   )
 }
+
+export default withStyles(styles)(Abilities);
 
 const StyledContainer = styled.div`
   margin: auto;

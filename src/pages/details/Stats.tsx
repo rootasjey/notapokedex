@@ -1,8 +1,6 @@
 import React, { Component }   from 'react';
 import styled                 from 'styled-components';
 
-import { TooltipHost } from 'office-ui-fabric-react/lib/Tooltip';
-
 import {
   autorun,
   IReactionDisposer }         from 'mobx';
@@ -11,6 +9,8 @@ import { store }              from '../../store';
 
 import { getBgColor }         from '../../utils/colors';
 import { toPascalName }       from '../../utils/strings';
+
+import { Tooltip }            from '@material-ui/core';
 
 interface IProps {
   stats: StatEntry[];
@@ -84,18 +84,18 @@ export default class Stats extends Component<IProps, {}> {
           <StyledStatName>{stat.name}: </StyledStatName>
 
           <StyledBackgroundRect>
-            <TooltipHost content={`${percent}% from average`} id={ariaDescPercent} >
+            <Tooltip title={`${percent}% from average`} id={ariaDescPercent} placement="top" >
               <ForegroundRect aria-describedby={ariaDescPercent}>
                 <div>{stat.value}</div>
               </ForegroundRect>
-            </TooltipHost>
+            </Tooltip>
           </StyledBackgroundRect>
 
-          <TooltipHost content={`Average ${stat.name}`} id={ariaDescAvg} >
+          <Tooltip title={`Average ${stat.name}`} id={ariaDescAvg} placement="top" >
             <StyledStatAvg aria-describedby={ariaDescAvg}>
               { stat.avg }
             </StyledStatAvg>
-          </TooltipHost>
+          </Tooltip>
         </StyledStatLine>
       );
     }

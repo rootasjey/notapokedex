@@ -5,31 +5,38 @@ import { store }            from "../../store";
 import styled               from "styled-components";
 import TwitterSVGColor      from '../../assets/TwitterLogoColor.svg';
 
+import {
+  Card,
+  CardActions,
+  CardMedia,
+  CardHeader,
+  Avatar,
+  CardContent,
+  Typography,
+  Button,
+} from '@material-ui/core';
 
 import {
-  DocumentCard,
-  DocumentCardTitle,
-  DocumentCardActivity,
-  IDocumentCardPreviewProps,
-  DocumentCardPreview,
+  Theme,
+  StyleRulesCallback,
+  withStyles,
+} from '@material-ui/core/styles';
 
-} from 'office-ui-fabric-react/lib/DocumentCard';
-
-import { ImageFit } from "office-ui-fabric-react/lib/Image";
-
-const previewPropsUsingIcon: IDocumentCardPreviewProps = {
-  previewImages: [
-    {
-      previewImageSrc: TwitterSVGColor,
-      imageFit: ImageFit.center,
-      width: 288,
-      height: 196
-    }
-  ]
-}
+const styles: StyleRulesCallback = (theme: Theme) => ({
+  avatar: {
+    backgroundColor: '#0984e3'
+  },
+  card: {
+    maxWidth: 275,
+    margin: '10px',
+  },
+  media: {
+    height: 140,
+  },
+});
 
 @observer
-export default class Tweets extends Component {
+class Tweets extends Component<{ classes: any }, {}> {
   constructor(props: any) {
     super(props);
   }
@@ -41,32 +48,42 @@ export default class Tweets extends Component {
   }
 
   render() {
+    const classes = this.props.classes;
     const tweetsArray = store.tweets.map((tweet, index) =>
-      <StyledDcoumentCard onClickHref={`https://twitter.com/statuses/${tweet.id_str}`} key={index} >
-        <DocumentCardPreview {...previewPropsUsingIcon} />
+      <Card
+        className={classes.card}
+        key={index}
+      >
+        <CardHeader
+          avatar={
+            <Avatar aria-label="avatar" className={classes.avatar}>
+              R
+            </Avatar>
+          }
 
-        <div>
-          <DocumentCardTitle
-            title={tweet.text}
-            shouldTruncate={false}
-          />
-
-          <DocumentCardTitle
-            title={ new Date(tweet.created_at).toLocaleString() }
-            shouldTruncate={ false }
-            showAsSecondaryTitle={ true } />
-        </div>
-
-        <DocumentCardActivity
-          activity={ `@${tweet.user.screen_name}` }
-          people={[
-            {
-              name: `${ tweet.user.name }`,
-              profileImageSrc: `${ tweet.user.profile_image_url }`
-            }
-          ]}
+          title={`${tweet.user.name}`}
+          subheader={`@${tweet.user.screen_name}`}
         />
-      </StyledDcoumentCard>
+
+        <CardMedia
+          className={classes.media}
+          image={TwitterSVGColor}
+        />
+
+        <CardContent>
+          <Typography component="p">
+            {tweet.text}
+          </Typography>
+        </CardContent>
+
+        <CardActions>
+          <Button size="small"
+            onClick={() => { window.open(`https://twitter.com/statuses/${tweet.id_str}`) }}
+          >
+            View on Twitter
+          </Button>
+        </CardActions>
+      </Card>
     );
 
     return (
@@ -77,16 +94,12 @@ export default class Tweets extends Component {
   }
 }
 
+export default withStyles(styles)(Tweets);
+
 const StyledContainer = styled.div`
   display: flex;
+  justify-content: center;
   overflow-x: scroll;
 
   padding-bottom: 50px;
-`;
-
-const StyledDcoumentCard = styled(DocumentCard)`
-  margin-right: 10px;
-  padding: 15px;
-
-  min-width: initial !important;
 `;

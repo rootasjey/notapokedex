@@ -22,6 +22,7 @@ interface Pokemon {
 
 interface PokemonLineEntry {
   id: number;
+  isBookmarked: boolean;
   name: string;
   url: string;
 }

@@ -74,6 +74,7 @@ class Store {
         .map((entry: any, index: number) => {
           return {
             id: index,
+            isBookmarked: this.isBookmarked(index),
             name: entry.name,
             url: entry.url,
           }
@@ -107,7 +108,7 @@ class Store {
     const url = 'https://whale-irloxrdtbf.now.sh/';
 
     const query = `{
-        tweets(pokemon: "${pokemonName}") {
+        tweets(pokemon: "${pokemonName}", count: 3) {
           statuses {
             created_at
             id_str
@@ -175,6 +176,11 @@ class Store {
   }
 
   @action
+  public setBookmarksPanelState(open: boolean) {
+    this.isBookmarsPanelOpen = open;
+  }
+
+  @action
   /**
    * UI notifies back that it has been updated.
    */
@@ -218,12 +224,14 @@ class Store {
   @observable public bookmarks = new Map<number, PokemonLineEntry>([]);
 
   /**
-   * Need this to notify Fabric row component
+   * Need this to notify List row component
    * because it can't observe & doesn't trigger on non-visual prop changed.
    */
   @observable public bookmarksChanged: boolean = false;
 
   private bookmarksLoaded: boolean = false;
+
+  @observable public isBookmarsPanelOpen: boolean = false;
 
   @observable public focusedPokemon?: PokemonLineEntry;
 

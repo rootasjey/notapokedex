@@ -1,22 +1,38 @@
-import { faArrowAltCircleLeft }       from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon }            from '@fortawesome/react-fontawesome';
-import { library }                    from '@fortawesome/fontawesome-svg-core';
+import { observer }             from 'mobx-react';
+import React, { Component }     from 'react';
+import { store }                from '../../store';
 
-import { observer }                   from 'mobx-react';
-import React, { Component }           from 'react';
-import { store }                      from '../../store';
+import styled                   from 'styled-components';
 
-import styled                         from 'styled-components';
+import PokeCard                 from './PokeCard';
+import Tweets                   from './Tweets';
 
-import { Layer }                      from 'office-ui-fabric-react/lib/Layer';
+import { ArrowBack, Favorite }  from '@material-ui/icons';
 
-import PokeCard                       from './PokeCard';
-import Tweets                         from './Tweets';
+import {
+  AppBar,
+  IconButton,
+  Toolbar,
+  Typography,
+} from '@material-ui/core';
 
-library.add(faArrowAltCircleLeft);
+import {
+  Theme,
+  StyleRulesCallback,
+  withStyles,
+ } from '@material-ui/core/styles';
+
+const styles: StyleRulesCallback = (theme: Theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+  grow: {
+    flexGrow: 1,
+  },
+});
 
 @observer
-export default class Details extends Component {
+class Details extends Component<{ classes: any }, {}> {
   constructor(props: any) {
     super(props);
 
@@ -33,9 +49,10 @@ export default class Details extends Component {
 
   private toggleBookmark(pokemon: Pokemon) {
     const pokeLineEntry: PokemonLineEntry = {
-      id    : pokemon.id - 1,
-      name  : pokemon.name,
-      url   : `${store.baseURL}${pokemon.id}`,
+      id            : pokemon.id - 1,
+      isBookmarked  : store.isBookmarked(pokemon.id - 1),
+      name          : pokemon.name,
+      url           : `${store.baseURL}${pokemon.id}`,
     }
 
     store.isBookmarked(pokeLineEntry) ?
@@ -45,26 +62,33 @@ export default class Details extends Component {
 
   render() {
     const props: any  = this.props;
+    const classes     = props.classes;
     const id          = props.match.params.id;
     const pokemon     = store.selectedPokemon;
     const poke        = {...pokemon, ...{id: pokemon.id - 1}};
 
     return (
-      <StyledCenteredDiv>
-        <StyledLayer>
-          <div onClick={ () => this.goBack() }>
-            <StyledFontAwesomeIconRotate icon="arrow-alt-circle-left" size="2x" />
-          </div>
+      <StyledCenteredDiv className={classes.root}>
+        <AppBar position="sticky" >
+          <Toolbar>
+            <IconButton onClick={ () => { this.goBack() }} color="inherit" >
+              <ArrowBack color="inherit" />
+            </IconButton>
 
-          <StyledTitle>{ store.selectedPokemon.name }</StyledTitle>
+            <div className={classes.grow} />
 
-          <div onClick={() => { this.toggleBookmark(pokemon); }}>
-            <StyledFontAwesomeIcon
-              icon={poke.isBookmarked ? ['fas', 'bookmark'] : ['far', 'bookmark']}
-              size="2x"
-            />
-          </div>
-        </StyledLayer>
+            <Typography variant="h6" color="inherit">
+              { store.selectedPokemon.name }
+            </Typography>
+
+            <div className={classes.grow} />
+
+            <IconButton onClick={() => { this.toggleBookmark(pokemon) }} >
+              <Favorite color={ poke.isBookmarked ? "secondary" : "inherit" } />
+            </IconButton>
+
+          </Toolbar>
+        </AppBar>
 
         <PokeCard id={id} />
 
@@ -78,39 +102,4 @@ const StyledCenteredDiv = styled.div`
   margin: auto;
 `;
 
-const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
-  padding: 10px;
-  cursor: pointer;
-  transition: .5s;
-
-  &:hover {
-    transform: scale(1.2);
-    transition: .5s;
-  }
-`;
-
-const StyledFontAwesomeIconRotate = styled(StyledFontAwesomeIcon)`
-  padding: 10px;
-  cursor: pointer;
-  transition: .5s;
-
-  &:hover {
-    transform: rotate(360deg);
-    transition: .5s;
-  }
-`;
-
-const StyledLayer = styled(Layer)`
-  & .ms-Layer-content {
-    color: white;
-    background: #1B9CFC;
-
-    display: flex;
-    justify-content: space-between;
-  }
-`;
-
-const StyledTitle = styled.h2`
-  font-weight: bold;
-  font-size: 1.5em;
-`;
+export default withStyles(styles)(Details);

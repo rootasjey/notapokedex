@@ -3,12 +3,3 @@ html, body {
   min-height: 100%;
   height: 100%;
 }
-
-/* .App {
-  margin: 30px;
-} */
-
-.ms-List a {
-  color: inherit;
-  text-decoration: none;
-}

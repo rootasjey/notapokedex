@@ -1,12 +1,12 @@
-import { observer }                     from "mobx-react";
-import React, { Component }             from 'react';
-import { store }                        from '../../store';
-import styled                           from "styled-components";
+import { observer }           from "mobx-react";
+import React, { Component }   from 'react';
+import { store }              from '../../store';
+import styled                 from "styled-components";
 
-import { Abilities }                    from './Abilities';
-import { Caroussel }                    from './Caroussel';
-import Stats                            from './Stats';
-import { Types }                        from './Types';
+import Abilities              from './Abilities';
+import Caroussel              from './Caroussel';
+import Stats                  from './Stats';
+import Types                  from './Types';
 
 @observer
 export default class PokeCard extends Component<ICardProps, {}> {
