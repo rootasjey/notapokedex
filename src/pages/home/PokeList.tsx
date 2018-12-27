@@ -11,13 +11,13 @@ import { IconButton, Typography }     from '@material-ui/core';
 import FavoriteIcon                   from '@material-ui/icons/Favorite';
 
 import ReactList                      from 'react-list';
+import { autorun, IReactionDisposer } from "mobx";
 
 @observer
 export default class PokeList extends Component {
-  private list: RefObject<ReactList>;
-
+  private bookmarksDisposer: IReactionDisposer;
   private items: PokemonLineEntry[];
-
+  private list: RefObject<ReactList>;
   private resizedHandler: EventListener;
 
   public state: {
@@ -41,6 +41,13 @@ export default class PokeList extends Component {
     };
 
     this.resizedHandler = this.onResize.bind(this);
+
+    this.bookmarksDisposer = autorun(() => {
+      if (store.bookmarksChanged && this.list.current) {
+        this.list.current.forceUpdate();
+        store.setOffBookmarksChanged();
+      }
+    });
   }
 
   componentDidMount() {
@@ -49,6 +56,10 @@ export default class PokeList extends Component {
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.resizedHandler);
+
+    if (this.bookmarksDisposer) {
+      this.bookmarksDisposer();
+    }
   }
 
   onResize() {
@@ -63,11 +74,6 @@ export default class PokeList extends Component {
     const noMatch = store.searchInput.length > 0 && store.filteredList.length === 0;
 
     this.items = items;
-
-    if (this.list.current && store.bookmarksChanged) {
-      this.list.current.forceUpdate();
-      store.setOffBookmarksChanged();
-    }
 
     const content = noMatch ?
       <EmptyView hidden={noMatch} /> :

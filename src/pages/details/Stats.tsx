@@ -18,12 +18,12 @@ interface IProps {
 
 @observer
 export default class Stats extends Component<IProps, {}> {
-  private disposer: IReactionDisposer;
+  private statsDisposer: IReactionDisposer;
 
   constructor(props: IProps) {
     super(props);
 
-    this.disposer = autorun(() => {
+    this.statsDisposer = autorun(() => {
       if (store.selectedPokemon.types.length > 0 &&
           store.selectedPokemon.types[0].type.name.length > 0) {
 
@@ -33,7 +33,7 @@ export default class Stats extends Component<IProps, {}> {
   }
 
   componentWillUnmount() {
-    this.disposer();
+    this.statsDisposer();
   }
 
   public render() {
