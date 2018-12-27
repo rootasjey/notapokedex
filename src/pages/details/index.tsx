@@ -44,7 +44,7 @@ class Details extends Component<{ classes: any }, {}> {
 
   private goBack() {
     const props: any = this.props;
-    props.history.push('/');
+    props.history.goBack();
   }
 
   private toggleBookmark(pokemon: Pokemon) {
