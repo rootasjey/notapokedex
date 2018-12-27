@@ -6,14 +6,15 @@ import { store }            from '../../store';
 import React, { Component } from 'react';
 
 import {
+  AppBar,
+  Avatar,
+  Badge,
+  Chip,
   Drawer,
   IconButton,
   Typography,
-  Tooltip,
-  Chip,
-  Avatar,
-  AppBar,
   Toolbar,
+  Tooltip,
 } from '@material-ui/core';
 
 import {
@@ -57,9 +58,11 @@ class Bookmarks extends Component<{ classes: any, history: any }, {}> {
         <StyledContainer>
           <AppBar position="sticky">
             <Toolbar>
-              <Typography variant="h4" color="inherit">
-                {`Favorites - ${store.bookmarks.size}`}
-              </Typography>
+              <Badge badgeContent={store.bookmarks.size} color="secondary">
+                <Typography variant="h4" color="inherit">
+                  Favorites
+                </Typography>
+              </Badge>
             </Toolbar>
           </AppBar>
 
