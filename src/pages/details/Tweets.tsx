@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { observer }         from "mobx-react";
 import { store }            from "../../store";
 
+import { Grow }             from '@material-ui/core';
 import styled               from "styled-components";
 import TwitterSVGColor      from '../../assets/TwitterLogoColor.svg';
 
@@ -42,22 +43,29 @@ class Tweets extends Component<{ classes: any }, {}> {
   }
 
   public componentDidMount() {
-    if (store.selectedPokemon.name.length > 0) {
-      store.fetchTweets(store.selectedPokemon.name);
+    const { name } = store.selectedPokemon;
+
+    if (name.length > 0) {
+      store.fetchTweets(name);
+      store.startTweetStream(name);
     }
+  }
+
+  componentWillUnmount(){
+    store.stopTweetStream();
   }
 
   render() {
     const classes = this.props.classes;
     const tweetsArray = store.tweets.map((tweet, index) =>
       <Card
-        className={classes.card}
         key={index}
+        className={classes.card}
       >
         <CardHeader
           avatar={
             <Avatar aria-label="avatar" className={classes.avatar}>
-              R
+              { tweet.user.name.charAt(0) }
             </Avatar>
           }
 

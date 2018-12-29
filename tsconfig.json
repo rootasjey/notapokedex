@@ -7,7 +7,7 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "lib": [
-      "es2018",
+      "esnext",
       "dom"
     ],
     "jsx": "preserve",

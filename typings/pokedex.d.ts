@@ -129,6 +129,14 @@ interface TweetUser {
   screen_name: string;
 }
 
+interface TweetSubscriptionResponse {
+  data: TweetSubscriptionData;
+}
+
+interface TweetSubscriptionData {
+  tweetAdded: Tweet;
+}
+
 interface Type {
   name: string;
   url: string;

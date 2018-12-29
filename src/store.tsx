@@ -1,9 +1,21 @@
-import { action, computed, observable } from 'mobx';
 
-import { request } from 'graphql-request';
+import { ApolloClient }   from 'apollo-client';
+import gql                from 'graphql-tag';
+import { InMemoryCache }  from 'apollo-cache-inmemory';
+import { request }        from 'graphql-request';
+import { WebSocketLink }  from 'apollo-link-ws';
+
+import {
+  action,
+  computed,
+  observable,
+} from 'mobx';
 
 class Store {
-  @action
+  // ........
+  // ACTIONS
+  // ........
+
   /**
    * Add a pokemon to bookmarks.
    * NOTE: Careful to pass a pokemon with its id minus 1.
@@ -11,6 +23,7 @@ class Store {
    * (should be 0 instead of 1).
    * This because the PokeAPI mismatches true pokemons' ids.
    */
+  @action
   public addBookmark(pokemon: PokemonLineEntry) {
     this.bookmarks.set(pokemon.id, pokemon);
     this.bookmarksChanged = true;
@@ -159,10 +172,10 @@ class Store {
 
   @action
   public async fetchTweets(pokemonName: string) {
-    const url = 'https://whale-irloxrdtbf.now.sh/';
+    const url = 'https://whale-mkndctduwg.now.sh/';
 
     const query = `{
-        tweets(pokemon: "${pokemonName}", count: 3) {
+        tweets(word: "${pokemonName}", count: 3) {
           statuses {
             created_at
             id_str
@@ -283,6 +296,64 @@ class Store {
     this.searchInput = newValue;
   }
 
+  @action
+  public startTweetStream(word: string) {
+    const GRAPHQL_ENDPOINT = 'wss://whale-mkndctduwg.now.sh/graphql';
+    // const GRAPHQL_ENDPOINT = 'ws://localhost:4000/graphql';
+
+    const wsLink = new WebSocketLink({
+      uri: GRAPHQL_ENDPOINT,
+      options: {
+        connectionParams: { "word": word },
+        inactivityTimeout: 5000,
+        reconnect: true,
+        reconnectionAttempts: 3,
+      }
+    });
+
+    const client = new ApolloClient({
+      cache: new InMemoryCache(),
+      link: wsLink,
+    });
+
+    this.tweetsObserver = client
+      .subscribe({
+        query: gql`
+          subscription {
+            tweetAdded(word: "${word}") {
+              created_at
+              id_str
+              text
+              user {
+                name
+                profile_image_url
+                screen_name
+              }
+            }
+          }
+        `,
+      })
+      .subscribe(
+        (response: TweetSubscriptionResponse) => {
+          const { tweetAdded } = response.data;
+          this.tweets = [tweetAdded].concat(this.tweets).slice(0, 3);
+        },
+        (error) => { console.error(error); },
+      )
+  }
+
+  @action
+  public stopTweetStream() {
+    if (!this.tweetsObserver) { return; }
+
+    this.tweetsObserver.unsubscribe();
+  }
+
+
+  // ........
+  // COMPUTED
+  // ........
+
   @computed public get filteredList(): PokemonLineEntry[] {
     const list = this.list.filter((pokemonLineEntry) => {
       return pokemonLineEntry.name.indexOf(this.searchInput) > -1;
@@ -298,6 +369,10 @@ class Store {
     return list;
   };
 
+  // ........
+  // OBSERVABLE
+  // ........
+
   @observable public avgStats: AvgStats = {
     attack        : 0,
     defense       : 0,
@@ -307,13 +382,6 @@ class Store {
     speed         : 0,
   };
 
-  /**
-   * 'https://pokeapi.co/api/v2/pokemon/'
-   */
-  public baseURL: string = 'https://pokeapi.co/api/v2/pokemon/';
-
-  private pokeStatssURL: string = 'https://pokestats-bceyweotwd.now.sh/';
-
   @observable public bookmarks = new Map<number, PokemonLineEntry>([]);
 
   /**
@@ -322,9 +390,7 @@ class Store {
    */
   @observable public bookmarksChanged: boolean = false;
 
-  private bookmarksLoaded: boolean = false;
-
-  @observable controversy: Controversy = {
+  @observable public controversy: Controversy = {
     id        : -1,
     likes     : 0,
     name      : '',
@@ -365,6 +431,22 @@ class Store {
   };
 
   @observable public tweets: Tweet[] = [];
+
+  // ........
+  // PROPERTIES
+  // ........
+
+  /**
+   * 'https://pokeapi.co/api/v2/pokemon/'
+   */
+  public baseURL: string = 'https://pokeapi.co/api/v2/pokemon/';
+
+  private bookmarksLoaded: boolean = false;
+
+  private pokeStatssURL: string = 'https://pokestats-bceyweotwd.now.sh/';
+
+  private tweetsObserver?: ZenObservable.Subscription;
+
 }
 
 export const store = new Store();
