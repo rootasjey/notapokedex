@@ -13,8 +13,21 @@ import FavoriteIcon                   from '@material-ui/icons/Favorite';
 import ReactList                      from 'react-list';
 import { autorun, IReactionDisposer } from "mobx";
 
+
+import {
+  Theme,
+  StyleRulesCallback,
+  withStyles,
+} from '@material-ui/core/styles';
+
+const styles: StyleRulesCallback = (theme: Theme) => ({
+  iconList: {
+    width: 71,
+  },
+});
+
 @observer
-export default class PokeList extends Component {
+class PokeList extends Component<{ classes: any }> {
   private bookmarksDisposer: IReactionDisposer;
   private items: PokemonLineEntry[];
   private list: RefObject<ReactList>;
@@ -93,6 +106,7 @@ export default class PokeList extends Component {
 
   private rowRenderer(index: number, key: ReactText) {
     const pokemonLineEntry = this.items[index];
+    const { classes } = this.props;
 
     return (
       <StyledRow key={key} >
@@ -112,9 +126,12 @@ export default class PokeList extends Component {
 
         <IconButton
           aria-label="Add to favorites"
+          className={classes.iconList}
           onClick={() => { this.toggleBookmark(pokemonLineEntry) }}>
 
-          <FavoriteIcon color={store.isBookmarked(pokemonLineEntry) ? "secondary" : "action"} />
+          <FavoriteIcon
+            color={store.isBookmarked(pokemonLineEntry) ? "secondary" : "action"}
+          />
         </IconButton>
       </StyledRow>
     )
@@ -126,6 +143,8 @@ export default class PokeList extends Component {
       store.addBookmark(pokemonLineEntry);
   }
 }
+
+export default withStyles(styles)(PokeList);
 
 function EmptyView(props: any): JSX.Element {
   const hidden: boolean = props.hidden;
@@ -165,12 +184,11 @@ const StyledRow = styled.div`
   display: flex;
   justify-content: space-between;
 
-  transition: .5s;
+  transition: .3s;
 
   &:hover {
-    color: white;
-    background-color: #95a5a6;
-    transition: .5s;
+    box-shadow: -1px 20px 26px -17px rgba(0,0,0,0.75);
+    transition: .3s;
   }
 `;
 
