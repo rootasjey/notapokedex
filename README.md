@@ -18,7 +18,7 @@ You can test the app at the available URL at the top of this page.
 * Browse Pokemons list
 * Search a Pokemon by name or by id
 * Compare a Pokemon's statistics with all others Pokemons of the same type(s)
-* View recent Tweets about a Pokemon
+* View live Tweets about a Pokemon
 * Like or dislike a Pokemon
 
 ## development
