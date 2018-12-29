@@ -87,6 +87,7 @@ interface AvgStats {
 }
 
 interface Sprites {
+  [key: string]: string;
   back_default: string;
   back_female: string;
   back_shiny: string;
