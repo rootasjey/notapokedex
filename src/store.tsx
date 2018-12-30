@@ -99,7 +99,9 @@ class Store {
       const data: PokeStatsResponse = await request(this.pokeStatssURL, query);
       this.avgStats = data.averageStats.avg;
 
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   /**
@@ -292,7 +294,7 @@ class Store {
   }
 
   @action
-  setSearchInput(newValue: string) {
+  public setSearchInput(newValue: string) {
     this.searchInput = newValue;
   }
 

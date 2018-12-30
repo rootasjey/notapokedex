@@ -28,10 +28,7 @@ export default class PokeCard extends Component<ICardProps, {}> {
           #{pokemon.id}
         </Typography>
 
-        <Caroussel
-          pokemonName={pokemon.name}
-          sprites={pokemon.sprites}
-        />
+        <Caroussel />
 
         <Types types={pokemon.types} />
 
