@@ -91,6 +91,11 @@ class Home extends Component<{ classes: any, history: any}, { showPanel: boolean
 
   search(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     const newValue = event.target.value;
+
+    if (newValue === store.searchInput) {
+      return;
+    }
+
     store.setSearchInput(newValue ? newValue : '');
   }
 
@@ -122,6 +127,7 @@ class Home extends Component<{ classes: any, history: any}, { showPanel: boolean
               <InputBase
                 color="inherit"
                 placeholder="Search a pokemon..."
+                defaultValue={store.searchInput}
                 onChange={(e) => this.search(e)}
                 classes={{
                   root: classes.inputRoot,
