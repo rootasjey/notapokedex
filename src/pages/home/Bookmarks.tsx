@@ -67,7 +67,7 @@ class Bookmarks extends Component<{ classes: any, history: any }, {}> {
           </AppBar>
 
           <StyledSubHeader>
-            <Tooltip title="Clear bookmarks">
+            <Tooltip title="Clear favorites">
               <IconButton aria-label="delete"
                 onClick={ () => { store.clearBookmarks() } }
               >
@@ -92,11 +92,11 @@ class Bookmarks extends Component<{ classes: any, history: any }, {}> {
     );
   }
 
-  private getContent(bookmarks: Map<number, PokemonLineEntry>) {
+  private getContent(bookmarks: Map<number, MinimalPokemon>) {
     if (bookmarks.size === 0) {
       return (
         <div>
-          Nothing bookmarked yet.
+          Nothing in favorites yet.
       </div>
       );
     }
@@ -106,7 +106,7 @@ class Bookmarks extends Component<{ classes: any, history: any }, {}> {
     return [...bookmarks].map(([key, poke]) => {
       return (
         <Chip
-          avatar={<Avatar>{poke.id + 1}</Avatar>}
+          avatar={<Avatar>{ poke.id }</Avatar>}
           className={classes.chip}
           key={key}
           label={poke.name}
@@ -117,7 +117,7 @@ class Bookmarks extends Component<{ classes: any, history: any }, {}> {
     });
   }
 
-  private goTo(poke: PokemonLineEntry) {
+  private goTo(poke: MinimalPokemon) {
     store.setPartialPokemon(poke);
     this.props.history.push(`/pokemon/${poke.id}`)
   }

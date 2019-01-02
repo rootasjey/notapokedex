@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { observer }         from "mobx-react";
 import { store }            from "../../store";
 
-import { Grow }             from '@material-ui/core';
 import styled               from "styled-components";
 import TwitterSVGColor      from '../../assets/TwitterLogoColor.svg';
 
@@ -23,6 +22,8 @@ import {
   withStyles,
 } from '@material-ui/core/styles';
 
+import { IReactionDisposer, autorun } from "mobx";
+
 const styles: StyleRulesCallback = (theme: Theme) => ({
   avatar: {
     backgroundColor: '#0984e3'
@@ -38,21 +39,33 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
 
 @observer
 class Tweets extends Component<{ classes: any }, {}> {
+  private pokemonNameDisposer?: IReactionDisposer;
+
   constructor(props: any) {
     super(props);
   }
 
-  public componentDidMount() {
-    const { name } = store.selectedPokemon;
+  componentDidMount() {
+    this.pokemonNameDisposer = autorun(() => {
+      const { name } =store.selectedPokemon;
 
-    if (name.length > 0) {
-      store.fetchTweets(name);
-      store.startTweetStream(name);
-    }
+      if (name) {
+        store.fetchTweets(name);
+        store.startTweetStream(name);
+
+        if (this.pokemonNameDisposer) {
+          this.pokemonNameDisposer();
+        }
+      }
+    });
   }
 
   componentWillUnmount(){
     store.stopTweetStream();
+
+    if (this.pokemonNameDisposer) {
+      this.pokemonNameDisposer();
+    }
   }
 
   render() {

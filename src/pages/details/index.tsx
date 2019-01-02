@@ -1,14 +1,18 @@
 import { observer }             from 'mobx-react';
 import React, { Component }     from 'react';
-import { store }                from '../../store';
 
-import styled                   from 'styled-components';
+import { store }                from '../../store';
 
 import PokeCard                 from './PokeCard';
 import Tweets                   from './Tweets';
 import Controversy              from './Controversy';
 
 import { ArrowBack, Favorite }  from '@material-ui/icons';
+
+import {
+  autorun,
+  IReactionDisposer,
+} from 'mobx';
 
 import {
   AppBar,
@@ -24,9 +28,11 @@ import {
   withStyles,
  } from '@material-ui/core/styles';
 
+
 const styles: StyleRulesCallback = (theme: Theme) => ({
   root: {
     flexGrow: 1,
+    margin: 'auto',
   },
   grow: {
     flexGrow: 1,
@@ -35,31 +41,34 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
 
 @observer
 class Details extends Component<{ classes: any }, {}> {
+
+  private bookmarksDisposer?: IReactionDisposer;
+
   constructor(props: any) {
     super(props);
-
-    // Auto-redirect if pokedex is empty
-    if (store.list.length === 0) {
-      this.goBack();
-    }
   }
 
-  private goBack() {
-    const props: any = this.props;
-    props.history.goBack();
+  componentDidMount() {
+    this.bookmarksDisposer = autorun(() => {
+      if (store.bookmarksLoaded) {
+        store.selectedPokemon.isBookmarked =
+          store.isBookmarked(store.selectedPokemon);
+
+        if (this.bookmarksDisposer) {
+          this.bookmarksDisposer();
+        }
+
+        return;
+      }
+
+      store.loadBookmarks();
+    });
   }
 
-  private toggleBookmark(pokemon: Pokemon) {
-    const pokeLineEntry: PokemonLineEntry = {
-      id            : pokemon.id - 1,
-      isBookmarked  : store.isBookmarked(pokemon.id - 1),
-      name          : pokemon.name,
-      url           : `${store.baseURL}${pokemon.id}`,
+  componentWillUnmount() {
+    if (this.bookmarksDisposer) {
+      this.bookmarksDisposer();
     }
-
-    store.isBookmarked(pokeLineEntry) ?
-      store.removeBookmark(pokeLineEntry) :
-      store.addBookmark(pokeLineEntry)
   }
 
   render() {
@@ -67,10 +76,9 @@ class Details extends Component<{ classes: any }, {}> {
     const classes     = props.classes;
     const id          = props.match.params.id;
     const pokemon     = store.selectedPokemon;
-    const poke        = {...pokemon, ...{id: pokemon.id - 1}};
 
     return (
-      <StyledCenteredDiv className={classes.root}>
+      <div className={classes.root}>
         <AppBar position="sticky" >
           <Toolbar>
             <Tooltip title="Go back">
@@ -87,10 +95,15 @@ class Details extends Component<{ classes: any }, {}> {
 
             <div className={classes.grow} />
 
-            <Tooltip title="Add to favorites">
-              <IconButton onClick={() => { this.toggleBookmark(pokemon) }} >
-                <Favorite color={ poke.isBookmarked ? "secondary" : "inherit" } />
-              </IconButton>
+            <Tooltip title={pokemon.isBookmarked ? "Remove from favorites" : "Add to favorites"} >
+              <div>
+                <IconButton
+                  onClick={() => { this.toggleBookmark(pokemon) }}
+                  disabled={!store.bookmarksLoaded} >
+
+                  <Favorite color={ pokemon.isBookmarked ? "secondary" : "inherit" } />
+                </IconButton>
+              </div>
             </Tooltip>
 
           </Toolbar>
@@ -101,13 +114,32 @@ class Details extends Component<{ classes: any }, {}> {
         <Controversy />
 
         <Tweets />
-      </StyledCenteredDiv>
+      </div>
     );
   }
-}
 
-const StyledCenteredDiv = styled.div`
-  margin: auto;
-`;
+  private goBack() {
+    const props: any = this.props;
+    props.history.goBack();
+  }
+
+  private toggleBookmark(pokemon: Pokemon) {
+    const { id, name, sprites } = pokemon;
+    const isBookmarked = store.isBookmarked(id);
+
+    const minimalPokemon: MinimalPokemon = {
+      id,
+      isBookmarked,
+      name,
+      sprites,
+      url: `${store.baseURL}${id}`,
+    };
+
+    store.isBookmarked(minimalPokemon) ?
+      store.removeBookmark(minimalPokemon) :
+      store.addBookmark(minimalPokemon);
+  }
+
+}
 
 export default withStyles(styles)(Details);

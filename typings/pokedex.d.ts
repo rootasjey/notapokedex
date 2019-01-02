@@ -1,78 +1,11 @@
-interface AbilityEntry {
-  ability: Ability;
-  is_hidden: boolean;
-  slot: number;
-}
-
 interface Ability {
   name: string;
   url: string;
 }
-
-interface LikeResponse {
-  like: Controversy;
-}
-
-interface DislikeResponse {
-  dislike: Controversy;
-}
-
-interface ControversyResponse {
-  controversy: Controversy;
-}
-
-interface Controversy {
-  dislikes: number;
-  id: number;
-  likes: number;
-  name: string;
-}
-
-interface Pokemon {
-  abilities: AbilityEntry[];
-  id: number;
-  isBookmarked: boolean;
-  name: string;
-  sprites: Sprites;
-  stats: StatEntry[];
-  types: TypeEntry[];
-  weight: number;
-}
-
-interface PokemonLineEntry {
-  id: number;
-  isBookmarked: boolean;
-  name: string;
-  url: string;
-}
-
-interface PokeAPIListData {
-  count: number;
-  next?: number;
-  previous?: number;
-  results: PokeAPISimplePoke[];
-}
-
-interface PokeAPISimplePoke {
-  name: string;
-  url: string;
-}
-
-interface PokeStatsResponse {
-  averageStats: PokeStatsResponseData;
-}
-
-interface PokeStatsResponseData {
-  avg: AvgStats;
-  meta: AvgStatsMeta;
-
-  pokemonCount: number;
-
-  types: string[];
-}
-
-interface AvgStatsMeta {
-  lastUpdated: string;
+interface AbilityEntry {
+  ability: Ability;
+  is_hidden: boolean;
+  slot: number;
 }
 
 interface AvgStats {
@@ -86,16 +19,86 @@ interface AvgStats {
   speed: number;
 }
 
+interface AvgStatsMeta {
+  lastUpdated: string;
+}
+
+interface Controversy {
+  dislikes: number;
+  id: number;
+  likes: number;
+  name: string;
+}
+
+interface ControversyResponse {
+  controversy: Controversy;
+}
+
+interface DislikeResponse {
+  dislike: Controversy;
+}
+
+interface LikeResponse {
+  like: Controversy;
+}
+
+interface ListResponse {
+  list: PokestatsList;
+}
+
+interface MinimalPokemon {
+  id: number;
+  isBookmarked: boolean;
+  name: string;
+  sprites: PokestatsSprites;
+  url: string;
+}
+
+interface Pokemon {
+  abilities: AbilityEntry[];
+  id: number;
+  isBookmarked: boolean;
+  name: string;
+  sprites: Sprites;
+  stats: StatEntry[];
+  types: TypeEntry[];
+}
+
+interface PokemonByIdResponse {
+  pokemonById: Pokemon[];
+}
+
+interface PokestatsList {
+  results: MinimalPokemon[];
+}
+
+interface PokestatsSprites {
+  defaultFront: string;
+}
+
+interface PokestatsResponse {
+  averageStats: PokestatsResponseData;
+}
+
+interface PokestatsResponseData {
+  avg: AvgStats;
+  meta: AvgStatsMeta;
+
+  pokemonCount: number;
+
+  types: string[];
+}
+
 interface Sprites {
   [key: string]: string;
-  back_default: string;
-  back_female: string;
-  back_shiny: string;
-  back_shiny_female: string;
-  front_default: string;
-  front_female: string;
-  front_shiny: string;
-  front_shiny_female: string;
+  femaleBack: string;
+  femaleFront: string;
+  femaleShinyBack: string;
+  femaleShinyFront: string;
+  defaultBack: string;
+  defaultFront: string;
+  defaultShinyBack: string;
+  defaultShinyFront: string;
 }
 
 interface Stat {
@@ -104,9 +107,19 @@ interface Stat {
 }
 
 interface StatEntry {
-  base_stat: number;
+  baseStat: number;
   effort: number;
   stat: Stat;
+}
+
+interface Type {
+  name: string;
+  url: string;
+}
+
+interface TypeEntry {
+  slot: number;
+  type: Type;
 }
 
 interface Tweet {
@@ -124,26 +137,16 @@ interface TweetServiceResponseStatuses {
   statuses: Tweet[];
 }
 
-interface TweetUser {
-  name: string;
-  profile_image_url: string;
-  screen_name: string;
+interface TweetSubscriptionData {
+  tweetAdded: Tweet;
 }
 
 interface TweetSubscriptionResponse {
   data: TweetSubscriptionData;
 }
 
-interface TweetSubscriptionData {
-  tweetAdded: Tweet;
-}
-
-interface Type {
+interface TweetUser {
   name: string;
-  url: string;
-}
-
-interface TypeEntry {
-  slot: number;
-  type: Type;
+  profile_image_url: string;
+  screen_name: string;
 }

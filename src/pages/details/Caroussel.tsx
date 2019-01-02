@@ -200,7 +200,7 @@ class Caroussel extends Component<
    * @param sprites List of sprites to choose from.
    */
   private getFirstValidSprite(sprites: Sprites): string {
-    let firstMatch = sprites.front_default || sprites.front_female;
+    let firstMatch = sprites.defaultFront || sprites.femaleFront;
 
     if (!firstMatch) {
       Object

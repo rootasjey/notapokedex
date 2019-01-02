@@ -43,8 +43,8 @@ class Controversy extends Component<{ classes: any }, {}> {
   }
 
   componentDidMount() {
-    if (store.selectedPokemon.id > -1) {
-      store.fetchControversy(store.selectedPokemon.id + 1);
+    if (store.selectedPokemon.id > 0) {
+      store.fetchControversy(store.selectedPokemon.id);
     }
   }
 

@@ -16,15 +16,8 @@ class Store {
   // ACTIONS
   // ........
 
-  /**
-   * Add a pokemon to bookmarks.
-   * NOTE: Careful to pass a pokemon with its id minus 1.
-   * This means that for bulbazaur, its id should be 1 - 1 = 0
-   * (should be 0 instead of 1).
-   * This because the PokeAPI mismatches true pokemons' ids.
-   */
   @action
-  public addBookmark(pokemon: PokemonLineEntry) {
+  public addBookmark(pokemon: MinimalPokemon) {
     this.bookmarks.set(pokemon.id, pokemon);
     this.bookmarksChanged = true;
 
@@ -62,7 +55,7 @@ class Store {
     }`;
 
     try {
-      const data: DislikeResponse = await request(this.pokeStatssURL, mutation);
+      const data: DislikeResponse = await request(this.pokestatsURL, mutation);
       this.controversy = data.dislike;
 
     } catch (error) {
@@ -96,7 +89,7 @@ class Store {
     }`;
 
     try {
-      const data: PokeStatsResponse = await request(this.pokeStatssURL, query);
+      const data: PokestatsResponse = await request(this.pokestatsURL, query);
       this.avgStats = data.averageStats.avg;
 
     } catch (error) {
@@ -122,7 +115,7 @@ class Store {
     }`;
 
     try {
-      const data: ControversyResponse = await request(this.pokeStatssURL, query);
+      const data: ControversyResponse = await request(this.pokestatsURL, query);
       this.controversy = data.controversy;
 
     } catch (error) {
@@ -132,18 +125,28 @@ class Store {
 
   @action
   public async fetchPokedex() {
-    try {
-      const rawData = await fetch(this.baseURL, { mode: 'cors' });
-      const data: PokeAPIListData = await rawData.json();
-
-      this.list = data.results
-        .map((entry: any, index: number) => {
-          return {
-            id: index,
-            isBookmarked: this.isBookmarked(index),
-            name: entry.name,
-            url: entry.url,
+    const query = `query {
+      list {
+        results {
+          id
+          name
+          url
+          sprites {
+            defaultFront
           }
+        }
+      }
+    }`;
+
+    try {
+
+      const response: ListResponse = await request(this.pokestatsURL, query);
+
+      this.list = response.list.results
+        .map((pokemon, index) => {
+          return { ...pokemon, ...{
+            isBookmarked: this.isBookmarked(index)
+          }};
         });
 
     } catch (error) {
@@ -154,17 +157,48 @@ class Store {
 
   @action
   public async fetchPokemon(id: number) {
-    const url = this.list.length > 0 ?
-      this.list[id].url :
-      `${this.baseURL}${id}`;
+
+    const query = `query {
+      pokemonById(id: ${id}) {
+        abilities {
+          ability {
+            name
+          }
+        }
+        id
+        name
+        sprites {
+          femaleBack
+          femaleFront
+          femaleShinyBack
+          femaleShinyFront
+          defaultBack
+          defaultFront
+          defaultShinyBack
+          defaultShinyFront
+        }
+        stats {
+          baseStat
+          stat {
+            name
+          }
+        }
+        types {
+          type {
+            name
+          }
+        }
+      }
+    }`;
 
     try {
-      const data = await fetch(url, { mode: 'cors' });
-      const pokemon: Pokemon = await data.json();
+      const data: PokemonByIdResponse = await request(this.pokestatsURL, query);
+
+      const pokemon = data.pokemonById[0];
 
       this.selectedPokemon = {
         ...pokemon,
-        ...{ isBookmarked: this.isBookmarked(pokemon.id - 1) }
+        ...{ isBookmarked: this.isBookmarked(pokemon.id) }
       };
 
     } catch (error) {
@@ -202,7 +236,7 @@ class Store {
   }
 
   @action
-  public isBookmarked(pokemon: PokemonLineEntry | Pokemon | number): boolean {
+  public isBookmarked(pokemon: MinimalPokemon | Pokemon | number): boolean {
     if (typeof pokemon === 'number') {
       return this.bookmarks.has(pokemon);
     }
@@ -228,7 +262,7 @@ class Store {
     }`;
 
     try {
-      const data: LikeResponse = await request(this.pokeStatssURL, mutation);
+      const data: LikeResponse = await request(this.pokestatsURL, mutation);
       this.controversy = data.like;
 
     } catch (error) {
@@ -247,7 +281,7 @@ class Store {
       const data = localStorage.getItem(key);
       if (!data) { return; }
 
-      const pokemonLineEntry: PokemonLineEntry = JSON.parse(data);
+      const pokemonLineEntry: MinimalPokemon = JSON.parse(data);
 
       this.bookmarks.set(parseInt(key, 10), pokemonLineEntry);
     }
@@ -256,7 +290,7 @@ class Store {
   }
 
   @action
-  public removeBookmark(pokemon: PokemonLineEntry) {
+  public removeBookmark(pokemon: MinimalPokemon) {
     if (!this.bookmarks.has(pokemon.id)) {
       return;
     }
@@ -288,7 +322,7 @@ class Store {
   /**
    * Set partial pokemon data from clicked link.
    */
-  public setPartialPokemon(pokemonLineEntry: PokemonLineEntry) {
+  public setPartialPokemon(pokemonLineEntry: MinimalPokemon) {
     const { id, name } = pokemonLineEntry;
     this.selectedPokemon = { ...this.selectedPokemon, ...{ id, name }}
   }
@@ -356,7 +390,7 @@ class Store {
   // COMPUTED
   // ........
 
-  @computed public get filteredList(): PokemonLineEntry[] {
+  @computed public get filteredList(): MinimalPokemon[] {
     const list = this.list.filter((pokemonLineEntry) => {
       return pokemonLineEntry.name.indexOf(this.searchInput) > -1;
     });
@@ -384,7 +418,7 @@ class Store {
     speed         : 0,
   };
 
-  @observable public bookmarks = new Map<number, PokemonLineEntry>([]);
+  @observable public bookmarks = new Map<number, MinimalPokemon>([]);
 
   /**
    * Need this to notify List row component
@@ -399,11 +433,11 @@ class Store {
     dislikes  : 0,
   };
 
-  @observable public focusedPokemon?: PokemonLineEntry;
+  @observable public focusedPokemon?: MinimalPokemon;
 
   @observable public isBookmarsPanelOpen: boolean = false;
 
-  @observable public list: PokemonLineEntry[] = [];
+  @observable public list: MinimalPokemon[] = [];
 
   @observable public searchInput: string = '';
 
@@ -413,14 +447,14 @@ class Store {
     isBookmarked: false,
     name        : '',
     sprites: {
-      back_default      : '',
-      back_female       : '',
-      back_shiny        : '',
-      back_shiny_female : '',
-      front_default     : '',
-      front_female      : '',
-      front_shiny       : '',
-      front_shiny_female: '',
+      defaultBack      : '',
+      femaleBack       : '',
+      defaultShinyBack        : '',
+      femaleShinyBack : '',
+      defaultFront     : '',
+      femaleFront      : '',
+      defaultShinyFront       : '',
+      femaleShinyFront: '',
     },
     stats: [],
     types: [
@@ -429,7 +463,6 @@ class Store {
         type: { name: '', url: '' }
       }
     ],
-    weight: 0,
   };
 
   @observable public tweets: Tweet[] = [];
@@ -443,9 +476,9 @@ class Store {
    */
   public baseURL: string = 'https://pokeapi.co/api/v2/pokemon/';
 
-  private bookmarksLoaded: boolean = false;
+  public bookmarksLoaded: boolean = false;
 
-  private pokeStatssURL: string = 'https://pokestats-bceyweotwd.now.sh/';
+  private pokestatsURL: string = 'https://pokestats-gmtiqydwwa.now.sh/';
 
   private tweetsObserver?: ZenObservable.Subscription;
 

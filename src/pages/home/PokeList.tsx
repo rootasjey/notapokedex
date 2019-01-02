@@ -29,13 +29,13 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
 @observer
 class PokeList extends Component<{ classes: any }> {
   private bookmarksDisposer: IReactionDisposer;
-  private items: PokemonLineEntry[];
+  private items: MinimalPokemon[];
   private list: RefObject<ReactList>;
   private resizedHandler: EventListener;
 
   public state: {
     height: number;
-    items: PokemonLineEntry[];
+    items: MinimalPokemon[];
     width: number;
     scrollTo: number,
   }
@@ -116,7 +116,7 @@ class PokeList extends Component<{ classes: any }> {
         >
 
           <Typography component="p">
-            #{ pokemonLineEntry.id + 1 }
+            #{ pokemonLineEntry.id }
           </Typography>
 
           <Typography variant="h5" component="h3">
@@ -137,7 +137,7 @@ class PokeList extends Component<{ classes: any }> {
     )
   }
 
-  private toggleBookmark(pokemonLineEntry: PokemonLineEntry) {
+  private toggleBookmark(pokemonLineEntry: MinimalPokemon) {
     store.isBookmarked(pokemonLineEntry) ?
       store.removeBookmark(pokemonLineEntry) :
       store.addBookmark(pokemonLineEntry);

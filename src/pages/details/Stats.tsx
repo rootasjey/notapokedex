@@ -42,7 +42,7 @@ export default class Stats extends Component<IProps, {}> {
     const orderedStats = stats.map((statEntry) => {
       const name        = statEntry.stat.name.replace('-', ' ');
       const pascalName  = toPascalName(statEntry.stat.name);
-      const value       = statEntry.base_stat;
+      const value       = statEntry.baseStat;
       const avg         = store.avgStats[pascalName];
 
       return { avg, name, value };
