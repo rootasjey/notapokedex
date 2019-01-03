@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { store }            from '../../store';
+import { store, LayoutType }from '../../store';
 import { observer }         from 'mobx-react';
 
 import Bookmarks            from './Bookmarks';
@@ -18,11 +18,21 @@ import SearchIcon           from '@material-ui/icons/Search';
 import { fade }             from '@material-ui/core/styles/colorManipulator';
 
 import {
+  Tooltip,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText
+} from '@material-ui/core';
+
+import {
   withStyles,
   Theme,
   StyleRulesCallback,
 } from '@material-ui/core/styles';
-import { Tooltip } from '@material-ui/core';
+
+import { CropSquare, Dashboard, List } from '@material-ui/icons';
+
 
 const styles: StyleRulesCallback = (theme: Theme)  => ({
   favoriteIcon: {
@@ -78,13 +88,27 @@ const styles: StyleRulesCallback = (theme: Theme)  => ({
 });
 
 @observer
-class Home extends Component<{ classes: any, history: any}, { showPanel: boolean; }> {
+class Home extends Component<
+{
+  classes: any, history: any
+},
+{
+  anchorEl?: HTMLElement
+  showPanel: boolean,
+  isMenuOpen: boolean
+}> {
+
   constructor(props: any) {
     super(props);
-    this.state = { showPanel: false };
+    this.state = {
+      anchorEl: undefined,
+      isMenuOpen: false,
+      showPanel: false
+    };
   }
 
   componentDidMount() {
+    store.loadLayoutPreference();
     store.loadBookmarks();
     store.fetchPokedex();
   }
@@ -115,6 +139,41 @@ class Home extends Component<{ classes: any, history: any}, { showPanel: boolean
 
                 Pokedex
               </Typography>
+            </Tooltip>
+
+            <Tooltip title="Layout">
+              <div>
+                <IconButton
+                  aria-owns={this.state.anchorEl ? 'simple-menu' : undefined}
+                  aria-haspopup={true}
+                  color="inherit"
+                  onClick={(event) => { this.openLayoutMenu(event) }}>
+
+                  <Dashboard />
+                </IconButton>
+
+                <Menu
+                  anchorEl={this.state.anchorEl}
+                  id="simple-menu"
+                  onClose={() => { this.onCloseLayoutMenu() }}
+                  open={this.state.isMenuOpen}
+                >
+
+                  <MenuItem onClick={() => this.setCardsLayout()}>
+                    <ListItemIcon>
+                      <CropSquare />
+                    </ListItemIcon>
+                    <ListItemText>Cards</ListItemText>
+                  </MenuItem>
+
+                  <MenuItem onClick={() => {this.setListLyout()}}>
+                    <ListItemIcon>
+                      <List />
+                    </ListItemIcon>
+                    <ListItemText>List</ListItemText>
+                  </MenuItem>
+                </Menu>
+              </div>
             </Tooltip>
 
             <div className={classes.grow} />
@@ -153,6 +212,24 @@ class Home extends Component<{ classes: any, history: any}, { showPanel: boolean
         <Bookmarks history={this.props.history} />
       </div>
     );
+  }
+
+  private openLayoutMenu(event: React.MouseEvent<HTMLElement>) {
+    this.setState({ anchorEl: event.currentTarget, isMenuOpen: true });
+  }
+
+  private onCloseLayoutMenu() {
+    this.setState({ anchorEl: undefined, isMenuOpen: false });
+  }
+
+  private setCardsLayout() {
+    store.changeLayout(LayoutType.Cards);
+    this.onCloseLayoutMenu();
+  }
+
+  private setListLyout() {
+    store.changeLayout(LayoutType.List);
+    this.onCloseLayoutMenu();
   }
 }
 

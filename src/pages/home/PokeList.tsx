@@ -1,18 +1,25 @@
 import { Link }                       from "react-router-dom";
 import { observer }                   from 'mobx-react';
-import { store }                      from '../../store';
+import { store, LayoutType }          from '../../store';
 import styled                         from 'styled-components';
 
 import React,
   { Component, RefObject, ReactText } from "react";
-
-import { IconButton, Typography }     from '@material-ui/core';
 
 import FavoriteIcon                   from '@material-ui/icons/Favorite';
 
 import ReactList                      from 'react-list';
 import { autorun, IReactionDisposer } from "mobx";
 
+import {
+  IconButton,
+  Typography,
+  Card,
+  CardActionArea,
+  CardMedia,
+  CardHeader,
+  Avatar,
+} from '@material-ui/core';
 
 import {
   Theme,
@@ -20,9 +27,43 @@ import {
   withStyles,
 } from '@material-ui/core/styles';
 
+import pokeball from '../../assets/pokeball.png';
+
 const styles: StyleRulesCallback = (theme: Theme) => ({
+  bold: {
+    fontWeight: 'bold',
+  },
+  card: {
+    height: 190,
+    width: 180,
+    margin: 10,
+  },
+  cardsContainer: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    marginTop: 30,
+  },
+  centeredDiv: {
+    margin: 'auto',
+  },
   iconList: {
     width: 71,
+  },
+  listContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    marginTop: 30,
+  },
+  media: {
+    height: 100,
+    width: 100,
+    margin: 'auto',
+  },
+  root: {
+    display: 'flex',
+    justifyContent: 'center',
   },
 });
 
@@ -34,10 +75,10 @@ class PokeList extends Component<{ classes: any }> {
   private resizedHandler: EventListener;
 
   public state: {
-    height: number;
-    items: MinimalPokemon[];
-    width: number;
-    scrollTo: number,
+    height    : number;
+    items     : MinimalPokemon[];
+    scrollTo  : number;
+    width     : number;
   }
 
   constructor(props: any) {
@@ -83,24 +124,96 @@ class PokeList extends Component<{ classes: any }> {
   }
 
   public render() {
+    const { classes } = this.props;
+
     const items = store.filteredList.length > 0 ? store.filteredList : store.list;
     const noMatch = store.searchInput.length > 0 && store.filteredList.length === 0;
 
     this.items = items;
 
     const content = noMatch ?
-      <EmptyView hidden={noMatch} /> :
+      <EmptyView classes={classes} hidden={noMatch} /> :
       <ReactList
         ref={this.list}
-        itemRenderer={(index, key) => this.rowRenderer(index, key)}
+        itemRenderer={
+          store.layout === LayoutType.Cards ?
+          (index, key) => this.cardRenderer(index, key) :
+          (index, key) => this.rowRenderer(index, key)
+        }
+        itemsRenderer={(items, ref) => this.itemsContainerRenderer(items, ref)}
         length={items.length}
         type="uniform"
       />
 
     return (
-      <StyledCenteredContent>
+      <div className={classes.root}>
         { content }
-      </StyledCenteredContent>
+      </div>
+    )
+  }
+
+  private itemsContainerRenderer(items: JSX.Element[], ref: string) {
+    const { classes } = this.props;
+
+    return (
+      <div
+        className={
+          store.layout === LayoutType.Cards ?
+            classes.cardsContainer :
+            classes.listContainer
+          }
+
+        ref={ref}
+      >
+        {items}
+      </div>
+    );
+  }
+
+  private cardRenderer(index: number, key: ReactText) {
+    const { classes } = this.props;
+    const minimalPokemon = this.items[index];
+
+    const mediaURL = minimalPokemon.sprites ?
+      minimalPokemon.sprites.defaultFront :
+      pokeball;
+
+    return (
+      <Card
+        className={classes.card}
+        key={key}
+        square={true}
+      >
+        <CardHeader
+          avatar={
+            <Avatar>
+              <IconButton
+                aria-label="Add to favorites"
+                className={classes.iconList}
+                onClick={() => { this.toggleBookmark(minimalPokemon) }}>
+
+                <FavoriteIcon
+                  color={store.isBookmarked(minimalPokemon) ? "secondary" : "action"}
+                />
+              </IconButton>
+            </Avatar>
+          }
+          title={minimalPokemon.name}
+          subheader={`n°${minimalPokemon.id}`}
+        />
+        <CardActionArea>
+          <Link
+            to={`/pokemon/${minimalPokemon.id}`}
+            onClick={() => store.setPartialPokemon(minimalPokemon) }
+          >
+            <CardMedia
+              className={classes.media}
+              image={mediaURL}
+              title={minimalPokemon.name}
+            />
+          </Link>
+        </CardActionArea>
+      </Card>
     )
   }
 
@@ -148,41 +261,29 @@ export default withStyles(styles)(PokeList);
 
 function EmptyView(props: any): JSX.Element {
   const hidden: boolean = props.hidden;
+  const { classes } = props;
 
   if (hidden) {
     return (
-      <StyledCenterDiv>
+      <div className={classes.centeredDiv}>
         <Typography>
           No match has been found :(
         </Typography>
-      </StyledCenterDiv>);
+      </div>);
   }
 
   return <span></span>;
 }
-
-const StyledCenterDiv = styled.div`
-  margin: auto;
-`;
-
-const StyledCenteredContent = styled.div`
-  display: flex;
-  justify-content: center;
-
-  margin-top: 30px;
-`;
 
 const StyledRow = styled.div`
   border-bottom-color: #95a5a6;
   border-bottom-style: solid;
   border-bottom-width: 1px;
 
-  min-width: 256px;
-
   cursor: pointer;
 
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
 
   transition: .3s;
 

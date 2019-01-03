@@ -11,6 +11,11 @@ import {
   observable,
 } from 'mobx';
 
+export enum LayoutType {
+  Cards = "Cards",
+  List = "List",
+}
+
 class Store {
   // ........
   // ACTIONS
@@ -27,6 +32,12 @@ class Store {
     };
 
     localStorage.setItem(`${pokemon.id}`, JSON.stringify(pokemon));
+  }
+
+  @action
+  public changeLayout(layout: LayoutType) {
+    this.layout = layout;
+    localStorage.setItem(this.LAYOUT_KEY, this.layout);
   }
 
   @action
@@ -281,12 +292,29 @@ class Store {
       const data = localStorage.getItem(key);
       if (!data) { return; }
 
+      if (isNaN(parseInt(key))) {
+        // this is not a pokemon (but maybe layout preference)
+        continue;
+      }
+
       const pokemonLineEntry: MinimalPokemon = JSON.parse(data);
 
       this.bookmarks.set(parseInt(key, 10), pokemonLineEntry);
     }
 
     this.bookmarksLoaded = true;
+  }
+
+  @action
+  public loadLayoutPreference() {
+    const savedLayout = localStorage.getItem(this.LAYOUT_KEY);
+
+    if (savedLayout === LayoutType.Cards) {
+      this.layout = LayoutType.Cards;
+      return;
+    }
+
+    this.layout = LayoutType.List;
   }
 
   @action
@@ -385,7 +413,6 @@ class Store {
     this.tweetsObserver.unsubscribe();
   }
 
-
   // ........
   // COMPUTED
   // ........
@@ -437,6 +464,8 @@ class Store {
 
   @observable public isBookmarsPanelOpen: boolean = false;
 
+  @observable public layout: LayoutType = LayoutType.List;
+
   @observable public list: MinimalPokemon[] = [];
 
   @observable public searchInput: string = '';
@@ -477,6 +506,8 @@ class Store {
   public baseURL: string = 'https://pokeapi.co/api/v2/pokemon/';
 
   public bookmarksLoaded: boolean = false;
+
+  private LAYOUT_KEY: string = 'layout';
 
   private pokestatsURL: string = 'https://pokestats-gmtiqydwwa.now.sh/';
 

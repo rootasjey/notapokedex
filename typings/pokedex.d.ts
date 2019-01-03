@@ -2,6 +2,7 @@ interface Ability {
   name: string;
   url: string;
 }
+
 interface AbilityEntry {
   ability: Ability;
   is_hidden: boolean;

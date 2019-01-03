@@ -40,6 +40,10 @@ You can test the app at the available URL at the top of this page.
 * [styled-components](https://www.styled-components.com)
 * [typescript](http://typescriptlang.org)
 
+## Credits
+
+* [Pokeball image](https://dribbble.com/shots/2858763-Pokeball) is from [Mattis Bødtker](https://dribbble.com/mattisbodtker)
+
 ## Licence
 
 MIT Licence
