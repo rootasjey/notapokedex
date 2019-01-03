@@ -69,7 +69,7 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
 
 @observer
 class PokeList extends Component<{ classes: any }> {
-  private bookmarksDisposer: IReactionDisposer;
+  private bookmarksDisposer?: IReactionDisposer;
   private items: MinimalPokemon[];
   private list: RefObject<ReactList>;
   private resizedHandler: EventListener;
@@ -95,6 +95,10 @@ class PokeList extends Component<{ classes: any }> {
     };
 
     this.resizedHandler = this.onResize.bind(this);
+  }
+
+  componentDidMount() {
+    window.addEventListener('resize', this.resizedHandler);
 
     this.bookmarksDisposer = autorun(() => {
       if (store.bookmarksChanged && this.list.current) {
@@ -102,10 +106,6 @@ class PokeList extends Component<{ classes: any }> {
         store.setOffBookmarksChanged();
       }
     });
-  }
-
-  componentDidMount() {
-    window.addEventListener('resize', this.resizedHandler);
   }
 
   componentWillUnmount() {
