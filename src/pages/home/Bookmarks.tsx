@@ -95,9 +95,9 @@ class Bookmarks extends Component<{ classes: any, history: any }, {}> {
   private getContent(bookmarks: Map<number, MinimalPokemon>) {
     if (bookmarks.size === 0) {
       return (
-        <div>
+        <Typography>
           Nothing in favorites yet.
-      </div>
+        </Typography>
       );
     }
 
