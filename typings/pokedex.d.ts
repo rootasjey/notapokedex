@@ -103,7 +103,7 @@ interface Sprites {
 }
 
 interface SpritesByIdResponse {
-  spritesById: [SpritesByIdResponseData];
+  spritesByIds: [SpritesByIdResponseData];
 }
 
 interface SpritesByIdResponseData {

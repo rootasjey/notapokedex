@@ -12,14 +12,15 @@ import ReactList                      from 'react-list';
 import { autorun, IReactionDisposer } from "mobx";
 
 import {
-  IconButton,
-  Typography,
+  Avatar,
   Card,
   CardActionArea,
-  CardMedia,
   CardHeader,
-  Avatar,
+  CardMedia,
+  IconButton,
+  LinearProgress,
   Paper,
+  Typography,
 } from '@material-ui/core';
 
 import {
@@ -28,9 +29,13 @@ import {
   withStyles,
 } from '@material-ui/core/styles';
 
-import pokeball from '../../assets/pokeball.png';
+import blank from '../../assets/blank.png';
 
 const styles: StyleRulesCallback = (theme: Theme) => ({
+  animInflate: {
+    animationName: 'inflate',
+    animationDuration: '.6s',
+  },
   bold: {
     fontWeight: 'bold',
   },
@@ -38,6 +43,13 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
     height: 190,
     width: 180,
     margin: 10,
+
+    transition: '.3s',
+
+    '&:hover': {
+      transform: 'scale(1.1)',
+      transition: '.3s',
+    }
   },
   cardsContainer: {
     display: 'flex',
@@ -197,13 +209,15 @@ class PokeList extends Component<{ classes: any }> {
     const minimalPokemon = this.items[index];
 
     let mediaURL: string = '';
+    let progress: JSX.Element = <span></span>;
 
     if (minimalPokemon.sprites) {
       mediaURL = minimalPokemon.sprites.defaultFront;
 
     } else {
-      mediaURL = pokeball;
+      mediaURL = blank;
       store.fetchPokemonSprites(minimalPokemon.id);
+      progress = <LinearProgress />;
     }
 
     return (
@@ -212,23 +226,8 @@ class PokeList extends Component<{ classes: any }> {
         key={key}
         square={true}
       >
-        <CardHeader
-          avatar={
-            <Avatar>
-              <IconButton
-                aria-label="Add to favorites"
-                className={classes.iconList}
-                onClick={() => { this.toggleBookmark(minimalPokemon) }}>
+        {progress}
 
-                <FavoriteIcon
-                  color={store.isBookmarked(minimalPokemon) ? "secondary" : "action"}
-                />
-              </IconButton>
-            </Avatar>
-          }
-          title={minimalPokemon.name}
-          subheader={`n°${minimalPokemon.id}`}
-        />
         <CardActionArea>
           <Link
             to={`/pokemon/${minimalPokemon.id}`}
@@ -239,8 +238,28 @@ class PokeList extends Component<{ classes: any }> {
               image={mediaURL}
               title={minimalPokemon.name}
             />
+
           </Link>
         </CardActionArea>
+
+        <CardHeader
+          avatar={
+            <Avatar>
+              <IconButton
+                aria-label="Add to favorites"
+                className={classes.iconList}
+                onClick={() => { this.toggleBookmark(minimalPokemon) }}>
+
+                <FavoriteIcon
+                  className={store.isBookmarked(minimalPokemon) ? classes.animInflate : ''}
+                  color={store.isBookmarked(minimalPokemon) ? 'secondary' : 'action'}
+                />
+              </IconButton>
+            </Avatar>
+          }
+          title={minimalPokemon.name}
+          subheader={`n°${minimalPokemon.id}`}
+        />
       </Card>
     )
   }

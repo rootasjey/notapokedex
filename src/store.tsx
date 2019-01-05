@@ -237,8 +237,24 @@ class Store {
 
     this.requestedSpritesIds[id] = id;
 
+    this.spritesIdsBatch.push(id);
+
+    if (this.spritesIdsRequestTimeout) {
+      clearTimeout(this.spritesIdsRequestTimeout);
+    }
+
+    this.spritesIdsRequestTimeout = setTimeout(() => {
+      this.fetchPokemonSpritesDelayed(this.spritesIdsBatch);
+    }, 1000);
+  }
+
+  private async fetchPokemonSpritesDelayed(ids: number[]) {
+    if (this.spritesIdsRequestTimeout) {
+      clearTimeout(this.spritesIdsRequestTimeout);
+    }
+
     const query = `query {
-      spritesById(id: ${id}) {
+      spritesByIds(ids: [${ids}]) {
         id
         sprites {
           defaultFront
@@ -249,16 +265,19 @@ class Store {
     try {
       const response: SpritesByIdResponse = await request(this.pokestatsURL, query);
 
-      response.spritesById
+      response.spritesByIds
         .map((data) => {
           const pokemon = this.list[data.id - 1];
 
-          const pokemonWithSprites = { ...pokemon, ...{sprites: data.sprites} };
+          const pokemonWithSprites = { ...pokemon, ...{ sprites: data.sprites } };
           this.list[data.id - 1] = pokemonWithSprites;
         });
 
-    } catch(error) {
+        this.spritesIdsBatch = [];
+
+    } catch (error) {
       console.error(error);
+      this.spritesIdsBatch = [];
     }
   }
 
@@ -576,6 +595,10 @@ class Store {
   private pokestatsURL: string = 'https://pokestatistics.herokuapp.com/';
 
   private requestedSpritesIds: {[key:number]: number} = {};
+
+  private spritesIdsBatch: number[] = [];
+
+  private spritesIdsRequestTimeout?: NodeJS.Timeout;
 
   private THEME_KEY = 'theme';
 

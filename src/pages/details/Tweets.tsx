@@ -31,6 +31,13 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
   card: {
     maxWidth: 275,
     margin: '10px',
+
+    transition: '.3s',
+
+    '&:hover': {
+      transform: 'scale(1.1)',
+      transition: '.3s',
+    }
   },
   media: {
     height: 140,
