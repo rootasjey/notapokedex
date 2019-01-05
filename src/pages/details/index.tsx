@@ -1,7 +1,7 @@
 import { observer }             from 'mobx-react';
 import React, { Component }     from 'react';
 
-import { store }                from '../../store';
+import { store, ThemeType }     from '../../store';
 
 import PokeCard                 from './PokeCard';
 import Tweets                   from './Tweets';
@@ -20,12 +20,15 @@ import {
   Toolbar,
   Typography,
   Tooltip,
+  Paper,
 } from '@material-ui/core';
 
 import {
   Theme,
   StyleRulesCallback,
   withStyles,
+  createMuiTheme,
+  MuiThemeProvider,
  } from '@material-ui/core/styles';
 
 
@@ -50,7 +53,7 @@ class Details extends Component<{ classes: any }, {}> {
 
   componentDidMount() {
     this.bookmarksDisposer = autorun(() => {
-      if (store.bookmarksLoaded) {
+      if (store.isBookmarksLoaded) {
         store.selectedPokemon.isBookmarked =
           store.isBookmarked(store.selectedPokemon);
 
@@ -77,44 +80,62 @@ class Details extends Component<{ classes: any }, {}> {
     const id          = props.match.params.id;
     const pokemon     = store.selectedPokemon;
 
+    let theme = createMuiTheme({
+      palette: {
+        type: 'light',
+      },
+      typography: { useNextVariants: true, }
+    });
+
+    if (store.theme === ThemeType.Dark) {
+      theme = createMuiTheme({
+        palette: {
+          type: 'dark',
+        },
+        typography: { useNextVariants: true },
+      });
+    }
+
     return (
-      <div className={classes.root}>
-        <AppBar position="sticky" >
-          <Toolbar>
-            <Tooltip title="Go back">
-              <IconButton onClick={ () => { this.goBack() }} color="inherit" >
-                <ArrowBack color="inherit" />
-              </IconButton>
-            </Tooltip>
-
-            <div className={classes.grow} />
-
-            <Typography variant="h6" color="inherit">
-              { store.selectedPokemon.name }
-            </Typography>
-
-            <div className={classes.grow} />
-
-            <Tooltip title={pokemon.isBookmarked ? "Remove from favorites" : "Add to favorites"} >
-              <div>
-                <IconButton
-                  onClick={() => { this.toggleBookmark(pokemon) }}
-                  disabled={!store.bookmarksLoaded} >
-
-                  <Favorite color={ pokemon.isBookmarked ? "secondary" : "inherit" } />
+      <MuiThemeProvider theme={theme}>
+        <Paper className={classes.root} square={true}>
+          <AppBar position="sticky" >
+            <Toolbar>
+              <Tooltip title="Go back">
+                <IconButton onClick={ () => { this.goBack() }} color="inherit" >
+                  <ArrowBack color="inherit" />
                 </IconButton>
-              </div>
-            </Tooltip>
+              </Tooltip>
 
-          </Toolbar>
-        </AppBar>
+              <div className={classes.grow} />
 
-        <PokeCard id={id} />
+              <Typography variant="h6" color="inherit">
+                { store.selectedPokemon.name }
+              </Typography>
 
-        <Controversy />
+              <div className={classes.grow} />
 
-        <Tweets />
-      </div>
+              <Tooltip title={pokemon.isBookmarked ? "Remove from favorites" : "Add to favorites"} >
+                <div>
+                  <IconButton
+                    onClick={() => { this.toggleBookmark(pokemon) }}
+                    disabled={!store.isBookmarksLoaded} >
+
+                    <Favorite color={ pokemon.isBookmarked ? "secondary" : "inherit" } />
+                  </IconButton>
+                </div>
+              </Tooltip>
+
+            </Toolbar>
+          </AppBar>
+
+          <PokeCard id={id} />
+
+          <Controversy />
+
+          <Tweets />
+        </Paper>
+      </MuiThemeProvider>
     );
   }
 

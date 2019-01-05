@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-import { store, LayoutType }from '../../store';
 import { observer }         from 'mobx-react';
 
 import Bookmarks            from './Bookmarks';
@@ -18,20 +17,35 @@ import SearchIcon           from '@material-ui/icons/Search';
 import { fade }             from '@material-ui/core/styles/colorManipulator';
 
 import {
+  store,
+  LayoutType,
+  ThemeType,
+} from '../../store';
+
+import {
   Tooltip,
   Menu,
   MenuItem,
   ListItemIcon,
-  ListItemText
+  ListItemText,
+  Grid,
 } from '@material-ui/core';
 
 import {
   withStyles,
   Theme,
   StyleRulesCallback,
+  createMuiTheme,
+  MuiThemeProvider,
 } from '@material-ui/core/styles';
 
-import { CropSquare, Dashboard, List } from '@material-ui/icons';
+import {
+  CropSquare,
+  Dashboard,
+  List,
+  BrightnessHigh,
+  BrightnessLow,
+} from '@material-ui/icons';
 
 
 const styles: StyleRulesCallback = (theme: Theme)  => ({
@@ -109,6 +123,7 @@ class Home extends Component<
 
   componentDidMount() {
     store.loadLayoutPreference();
+    store.loadThemePreference();
     store.loadBookmarks();
     store.fetchPokedex();
   }
@@ -124,93 +139,130 @@ class Home extends Component<
   }
 
   render() {
+    let theme = createMuiTheme({
+      palette: {
+        type: 'light',
+      },
+      typography: { useNextVariants: true, },
+    });
+
     const classes = this.props.classes;
 
+    let themeIcon = <BrightnessLow />;
+
+    let tooltipTheme: string = 'Dark Theme';
+
+    if (store.theme === ThemeType.Dark) {
+      themeIcon = <BrightnessHigh />;
+      tooltipTheme = 'Light Theme';
+
+      theme = createMuiTheme({
+        palette: {
+          type: 'dark',
+        },
+        typography: { useNextVariants: true },
+      });
+    }
+
     return (
-      <div className={classes.root}>
-        <AppBar position="sticky" >
-          <Toolbar>
-            <Tooltip title="Scroll to top">
-              <Typography
-                variant="h6"
-                color="inherit"
-                onClick={ () => {window.scrollTo(0, 0)}}
-              >
-
-                Pokedex
-              </Typography>
-            </Tooltip>
-
-            <Tooltip title="Layout">
-              <div>
-                <IconButton
-                  aria-owns={this.state.anchorEl ? 'simple-menu' : undefined}
-                  aria-haspopup={true}
+      <MuiThemeProvider theme={theme}>
+        <Grid className={classes.root}>
+          <AppBar position="sticky" >
+            <Toolbar>
+              <Tooltip title="Scroll to top">
+                <Typography
+                  variant="h6"
                   color="inherit"
-                  onClick={(event) => { this.openLayoutMenu(event) }}>
-
-                  <Dashboard />
-                </IconButton>
-
-                <Menu
-                  anchorEl={this.state.anchorEl}
-                  id="simple-menu"
-                  onClose={() => { this.onCloseLayoutMenu() }}
-                  open={this.state.isMenuOpen}
+                  onClick={ () => {window.scrollTo(0, 0)}}
                 >
 
-                  <MenuItem onClick={() => this.setCardsLayout()}>
-                    <ListItemIcon>
-                      <CropSquare />
-                    </ListItemIcon>
-                    <ListItemText>Cards</ListItemText>
-                  </MenuItem>
+                  Pokedex
+                </Typography>
+              </Tooltip>
 
-                  <MenuItem onClick={() => {this.setListLyout()}}>
-                    <ListItemIcon>
-                      <List />
-                    </ListItemIcon>
-                    <ListItemText>List</ListItemText>
-                  </MenuItem>
-                </Menu>
+              <Tooltip title="Layout">
+                <div>
+                  <IconButton
+                    aria-owns={this.state.anchorEl ? 'simple-menu' : undefined}
+                    aria-haspopup={true}
+                    color="inherit"
+                    onClick={(event) => { this.openLayoutMenu(event) }}>
+
+                    <Dashboard />
+                  </IconButton>
+
+                  <Menu
+                    anchorEl={this.state.anchorEl}
+                    id="simple-menu"
+                    onClose={() => { this.onCloseLayoutMenu() }}
+                    open={this.state.isMenuOpen}
+                  >
+
+                    <MenuItem onClick={() => this.setCardsLayout()}>
+                      <ListItemIcon>
+                        <CropSquare />
+                      </ListItemIcon>
+                      <ListItemText>Cards</ListItemText>
+                    </MenuItem>
+
+                    <MenuItem onClick={() => {this.setListLyout()}}>
+                      <ListItemIcon>
+                        <List />
+                      </ListItemIcon>
+                      <ListItemText>List</ListItemText>
+                    </MenuItem>
+                  </Menu>
+                </div>
+              </Tooltip>
+
+              <Tooltip title={tooltipTheme}>
+                <div>
+                  <IconButton
+                    color="inherit"
+                    disabled={!store.isThemeLoaded}
+                    onClick={() => {this.toggleTheme()}}
+                  >
+                    {themeIcon}
+                  </IconButton>
+                </div>
+              </Tooltip>
+
+              <div className={classes.grow} />
+
+              <div className={classes.search}>
+                <div className={classes.searchIcon}>
+                  <SearchIcon />
+                </div>
+
+                <InputBase
+                  color="inherit"
+                  placeholder="Search a pokemon..."
+                  defaultValue={store.searchInput}
+                  onChange={(e) => this.search(e)}
+                  classes={{
+                    root: classes.inputRoot,
+                    input: classes.inputInput,
+                  }}
+                />
               </div>
-            </Tooltip>
 
-            <div className={classes.grow} />
+              <Tooltip title="Open favorites">
+                <IconButton
+                  onClick={ () => { store.setBookmarksPanelState(true) } }
+                  className={ classes.favoriteIcon }
+                  aria-label="All favorites">
 
-            <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
-              </div>
+                  <FavoriteIcon color="secondary" />
+                </IconButton>
+              </Tooltip>
+            </Toolbar>
+          </AppBar>
 
-              <InputBase
-                color="inherit"
-                placeholder="Search a pokemon..."
-                defaultValue={store.searchInput}
-                onChange={(e) => this.search(e)}
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.inputInput,
-                }}
-              />
-            </div>
+          <PokeList />
 
-            <Tooltip title="Open favorites">
-              <IconButton
-                onClick={ () => { store.setBookmarksPanelState(true) } }
-                className={ classes.favoriteIcon }
-                aria-label="All favorites">
-
-                <FavoriteIcon color="secondary" />
-              </IconButton>
-            </Tooltip>
-          </Toolbar>
-        </AppBar>
-
-        <PokeList />
-
-        <Bookmarks history={this.props.history} />
-      </div>
+          <Bookmarks history={this.props.history} />
+        </Grid>
+      </MuiThemeProvider>
     );
   }
 
@@ -230,6 +282,14 @@ class Home extends Component<
   private setListLyout() {
     store.changeLayout(LayoutType.List);
     this.onCloseLayoutMenu();
+  }
+
+  private toggleTheme() {
+    const newTheme = store.theme === ThemeType.Dark ?
+      ThemeType.Light :
+      ThemeType.Dark;
+
+    store.changeTheme(newTheme);
   }
 }
 

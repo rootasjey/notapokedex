@@ -1,4 +1,3 @@
-
 import { ApolloClient }   from 'apollo-client';
 import gql                from 'graphql-tag';
 import { InMemoryCache }  from 'apollo-cache-inmemory';
@@ -12,8 +11,13 @@ import {
 } from 'mobx';
 
 export enum LayoutType {
-  Cards = "Cards",
-  List = "List",
+  Cards = 'Cards',
+  List = 'List',
+}
+
+export enum ThemeType {
+  Dark = 'Dark',
+  Light = 'Light',
 }
 
 class Store {
@@ -38,6 +42,12 @@ class Store {
   public changeLayout(layout: LayoutType) {
     this.layout = layout;
     localStorage.setItem(this.LAYOUT_KEY, this.layout);
+  }
+
+  @action
+  public changeTheme(theme: ThemeType) {
+    this.theme = theme;
+    localStorage.setItem(this.THEME_KEY, this.theme);
   }
 
   @action
@@ -136,6 +146,8 @@ class Store {
 
   @action
   public async fetchPokedex() {
+    if (this.list.length > 0) { return; }
+
     const query = `query {
       list {
         results {
@@ -218,6 +230,39 @@ class Store {
   }
 
   @action
+  public async fetchPokemonSprites(id: number) {
+    if (this.requestedSpritesIds[id]) {
+      return;
+    }
+
+    this.requestedSpritesIds[id] = id;
+
+    const query = `query {
+      spritesById(id: ${id}) {
+        id
+        sprites {
+          defaultFront
+        }
+      }
+    }`;
+
+    try {
+      const response: SpritesByIdResponse = await request(this.pokestatsURL, query);
+
+      response.spritesById
+        .map((data) => {
+          const pokemon = this.list[data.id - 1];
+
+          const pokemonWithSprites = { ...pokemon, ...{sprites: data.sprites} };
+          this.list[data.id - 1] = pokemonWithSprites;
+        });
+
+    } catch(error) {
+      console.error(error);
+    }
+  }
+
+  @action
   public async fetchTweets(pokemonName: string) {
     const url = 'https://whale-mkndctduwg.now.sh/';
 
@@ -283,7 +328,7 @@ class Store {
 
   @action
   public loadBookmarks() {
-    if (this.bookmarksLoaded) { return; }
+    if (this.isBookmarksLoaded) { return; }
 
     for (let i = 0, len = localStorage.length; i < len; i++) {
       const key = localStorage.key(i);
@@ -302,7 +347,7 @@ class Store {
       this.bookmarks.set(parseInt(key, 10), pokemonLineEntry);
     }
 
-    this.bookmarksLoaded = true;
+    this.isBookmarksLoaded = true;
   }
 
   @action
@@ -315,6 +360,21 @@ class Store {
     }
 
     this.layout = LayoutType.List;
+  }
+
+  @action loadThemePreference() {
+    if (this.isThemeLoaded) { return; }
+
+    this.isThemeLoaded = true;
+
+    const savedTheme = localStorage.getItem(this.THEME_KEY);
+
+    if (savedTheme === ThemeType.Dark) {
+      this.theme = ThemeType.Dark;
+      return;
+    }
+
+    this.theme = ThemeType.Light;
   }
 
   @action
@@ -494,6 +554,10 @@ class Store {
     ],
   };
 
+  @observable public theme: ThemeType = ThemeType.Dark;
+
+  @observable public isThemeLoaded: boolean = false;
+
   @observable public tweets: Tweet[] = [];
 
   // ........
@@ -505,11 +569,15 @@ class Store {
    */
   public baseURL: string = 'https://pokeapi.co/api/v2/pokemon/';
 
-  public bookmarksLoaded: boolean = false;
+  public isBookmarksLoaded: boolean = false;
 
   private LAYOUT_KEY: string = 'layout';
 
-  private pokestatsURL: string = 'https://pokestats-gmtiqydwwa.now.sh/';
+  private pokestatsURL: string = 'https://pokestatistics.herokuapp.com/';
+
+  private requestedSpritesIds: {[key:number]: number} = {};
+
+  private THEME_KEY = 'theme';
 
   private tweetsObserver?: ZenObservable.Subscription;
 

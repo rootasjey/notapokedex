@@ -102,6 +102,16 @@ interface Sprites {
   defaultShinyFront: string;
 }
 
+interface SpritesByIdResponse {
+  spritesById: [SpritesByIdResponseData];
+}
+
+interface SpritesByIdResponseData {
+  id: number;
+  name: string;
+  sprites: Sprites;
+}
+
 interface Stat {
   name: string;
   url: string;

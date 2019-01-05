@@ -19,6 +19,7 @@ import {
   CardMedia,
   CardHeader,
   Avatar,
+  Paper,
 } from '@material-ui/core';
 
 import {
@@ -64,6 +65,24 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
   root: {
     display: 'flex',
     justifyContent: 'center',
+  },
+  row: {
+    backgroundColor: 'transparent',
+    borderBottomColor: '#95a5a6',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: 1,
+
+    cursor: 'pointer',
+
+    display: 'flex',
+    justifyContent: 'center',
+
+    transition: '.3s',
+
+    '&:hover': {
+      boxShadow: '-1px 20px 26px -17px rgba(0,0,0,0.75);',
+      transition: '.3s',
+    }
   },
 });
 
@@ -134,7 +153,6 @@ class PokeList extends Component<{ classes: any }> {
     const content = noMatch ?
       <EmptyView classes={classes} hidden={noMatch} /> :
       <ReactList
-        ref={this.list}
         itemRenderer={
           store.layout === LayoutType.Cards ?
           (index, key) => this.cardRenderer(index, key) :
@@ -142,13 +160,17 @@ class PokeList extends Component<{ classes: any }> {
         }
         itemsRenderer={(items, ref) => this.itemsContainerRenderer(items, ref)}
         length={items.length}
+        ref={this.list}
         type="uniform"
       />
 
     return (
-      <div className={classes.root}>
+      <Paper
+        className={classes.root}
+        square={true}
+      >
         { content }
-      </div>
+      </Paper>
     )
   }
 
@@ -174,9 +196,15 @@ class PokeList extends Component<{ classes: any }> {
     const { classes } = this.props;
     const minimalPokemon = this.items[index];
 
-    const mediaURL = minimalPokemon.sprites ?
-      minimalPokemon.sprites.defaultFront :
-      pokeball;
+    let mediaURL: string = '';
+
+    if (minimalPokemon.sprites) {
+      mediaURL = minimalPokemon.sprites.defaultFront;
+
+    } else {
+      mediaURL = pokeball;
+      store.fetchPokemonSprites(minimalPokemon.id);
+    }
 
     return (
       <Card
@@ -222,7 +250,12 @@ class PokeList extends Component<{ classes: any }> {
     const { classes } = this.props;
 
     return (
-      <StyledRow key={key} >
+      <Paper
+        className={classes.row}
+        elevation={0}
+        key={key}
+        square={true}
+      >
         <StyledLink
           to={ `/pokemon/${ pokemonLineEntry.id }` }
           onClick={ () => store.setPartialPokemon(pokemonLineEntry) }
@@ -246,7 +279,7 @@ class PokeList extends Component<{ classes: any }> {
             color={store.isBookmarked(pokemonLineEntry) ? "secondary" : "action"}
           />
         </IconButton>
-      </StyledRow>
+      </Paper>
     )
   }
 
@@ -274,24 +307,6 @@ function EmptyView(props: any): JSX.Element {
 
   return <span></span>;
 }
-
-const StyledRow = styled.div`
-  border-bottom-color: #95a5a6;
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-
-  cursor: pointer;
-
-  display: flex;
-  justify-content: center;
-
-  transition: .3s;
-
-  &:hover {
-    box-shadow: -1px 20px 26px -17px rgba(0,0,0,0.75);
-    transition: .3s;
-  }
-`;
 
 const StyledLink = styled(Link)`
   display: inline-block;
