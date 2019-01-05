@@ -1,6 +1,6 @@
 {
-  "name": "pokedex",
-  "version": "1.0.0",
+  "name": "notapokedex",
+  "version": "1.5.0",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "1.2.10",

@@ -176,7 +176,7 @@ class Home extends Component<
                   onClick={ () => {window.scrollTo(0, 0)}}
                 >
 
-                  Pokedex
+                  notaPokedex
                 </Typography>
               </Tooltip>
 

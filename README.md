@@ -1,4 +1,4 @@
-# pokedex
+# notapokedex
 
 A simple react pokedex app for experiments.
 
@@ -18,8 +18,9 @@ You can test the app at the available URL at the top of this page.
 * Browse Pokemons list
 * Search a Pokemon by name or by id
 * Compare a Pokemon's statistics with all others Pokemons of the same type(s)
-* View live Tweets about a Pokemon
+* View live tweets about a Pokemon
 * Like or dislike a Pokemon
+* Dark & Light themes
 
 ## development
 
@@ -39,10 +40,6 @@ You can test the app at the available URL at the top of this page.
 * [react-router](https://reacttraining.com/react-router/web/guides/quick-start)
 * [styled-components](https://www.styled-components.com)
 * [typescript](http://typescriptlang.org)
-
-## Credits
-
-* [Pokeball image](https://dribbble.com/shots/2858763-Pokeball) is from [Mattis Bødtker](https://dribbble.com/mattisbodtker)
 
 ## Licence
 
