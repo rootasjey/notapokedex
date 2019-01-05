@@ -239,6 +239,14 @@ class Store {
 
     this.spritesIdsBatch.push(id);
 
+    if (this.spritesIdsBatch.length > 50) {
+      const removedId = this.spritesIdsBatch.shift();
+
+      if (typeof removedId === 'number') {
+        delete this.requestedSpritesIds[removedId];
+      }
+    }
+
     if (this.spritesIdsRequestTimeout) {
       clearTimeout(this.spritesIdsRequestTimeout);
     }
