@@ -74,6 +74,7 @@ const styles: StyleRulesCallback = (theme: Theme)  => ({
     width: '100%',
   },
   root: {
+    height: '100%',
     width: '100%',
   },
   search: {
@@ -126,16 +127,6 @@ class Home extends Component<
     store.loadThemePreference();
     store.loadBookmarks();
     store.fetchPokedex();
-  }
-
-  search(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
-    const newValue = event.target.value;
-
-    if (newValue === store.searchInput) {
-      return;
-    }
-
-    store.setSearchInput(newValue ? newValue : '');
   }
 
   render() {
@@ -272,6 +263,16 @@ class Home extends Component<
 
   private onCloseLayoutMenu() {
     this.setState({ anchorEl: undefined, isMenuOpen: false });
+  }
+
+  private search(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
+    const newValue = event.target.value;
+
+    if (newValue === store.searchInput) {
+      return;
+    }
+
+    store.setSearchInput(newValue ? newValue : '');
   }
 
   private setCardsLayout() {

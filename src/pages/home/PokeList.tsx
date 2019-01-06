@@ -71,11 +71,12 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
   },
   media: {
     height: 100,
-    width: 100,
     margin: 'auto',
+    width: 100,
   },
   root: {
     display: 'flex',
+    height: '100%',
     justifyContent: 'center',
   },
   row: {
@@ -321,7 +322,8 @@ function EmptyView(props: any): JSX.Element {
         <Typography>
           No match has been found :(
         </Typography>
-      </div>);
+      </div>
+    );
   }
 
   return <span></span>;
