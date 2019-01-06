@@ -21,6 +21,7 @@ import {
   LinearProgress,
   Paper,
   Typography,
+  Grow,
 } from '@material-ui/core';
 
 import {
@@ -76,7 +77,7 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
   },
   root: {
     display: 'flex',
-    height: '100%',
+    minHeight: '100%',
     justifyContent: 'center',
   },
   row: {
@@ -232,13 +233,15 @@ class PokeList extends Component<{ classes: any }> {
         <CardActionArea>
           <Link
             to={`/pokemon/${minimalPokemon.id}`}
-            onClick={() => store.setPartialPokemon(minimalPokemon) }
+            onClick={() => store.setPartialPokemon(minimalPokemon)}
           >
-            <CardMedia
-              className={classes.media}
-              image={mediaURL}
-              title={minimalPokemon.name}
-            />
+            <Grow in={mediaURL !== blank}>
+              <CardMedia
+                className={classes.media}
+                image={mediaURL}
+                title={minimalPokemon.name}
+              />
+            </Grow>
 
           </Link>
         </CardActionArea>
