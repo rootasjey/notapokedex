@@ -1,15 +1,17 @@
-import { Link }                       from "react-router-dom";
+import { Link }                       from 'react-router-dom';
 import { observer }                   from 'mobx-react';
 import { store, LayoutType }          from '../../store';
 import styled                         from 'styled-components';
 
 import React,
-  { Component, RefObject, ReactText } from "react";
+{ Component, RefObject, ReactText }   from 'react';
 
 import FavoriteIcon                   from '@material-ui/icons/Favorite';
 
 import ReactList                      from 'react-list';
-import { autorun, IReactionDisposer } from "mobx";
+import { autorun, IReactionDisposer } from 'mobx';
+
+import Tilt from 'react-tilt';
 
 import {
   Avatar,
@@ -44,13 +46,6 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
     height: 190,
     width: 180,
     margin: 10,
-
-    transition: '.3s',
-
-    '&:hover': {
-      transform: 'scale(1.1)',
-      transition: '.3s',
-    }
   },
   cardsContainer: {
     display: 'flex',
@@ -223,48 +218,50 @@ class PokeList extends Component<{ classes: any }> {
     }
 
     return (
-      <Card
-        className={classes.card}
-        key={key}
-        square={true}
-      >
-        {progress}
+      <Tilt key={key} options={{ scale: 1.1 }} >
+        <Card
+          className={classes.card}
+          key={key}
+          square={true}
+        >
+          {progress}
 
-        <CardActionArea>
-          <Link
-            to={`/pokemon/${minimalPokemon.id}`}
-            onClick={() => store.setPartialPokemon(minimalPokemon)}
-          >
-            <Grow in={mediaURL !== blank}>
-              <CardMedia
-                className={classes.media}
-                image={mediaURL}
-                title={minimalPokemon.name}
-              />
-            </Grow>
-
-          </Link>
-        </CardActionArea>
-
-        <CardHeader
-          avatar={
-            <Avatar>
-              <IconButton
-                aria-label="Add to favorites"
-                className={classes.iconList}
-                onClick={() => { this.toggleBookmark(minimalPokemon) }}>
-
-                <FavoriteIcon
-                  className={store.isBookmarked(minimalPokemon) ? classes.animInflate : ''}
-                  color={store.isBookmarked(minimalPokemon) ? 'secondary' : 'action'}
+          <CardActionArea>
+            <Link
+              to={`/pokemon/${minimalPokemon.id}`}
+              onClick={() => store.setPartialPokemon(minimalPokemon)}
+            >
+              <Grow in={mediaURL !== blank}>
+                <CardMedia
+                  className={classes.media}
+                  image={mediaURL}
+                  title={minimalPokemon.name}
                 />
-              </IconButton>
-            </Avatar>
-          }
-          title={minimalPokemon.name}
-          subheader={`n°${minimalPokemon.id}`}
-        />
-      </Card>
+              </Grow>
+
+            </Link>
+          </CardActionArea>
+
+          <CardHeader
+            avatar={
+              <Avatar>
+                <IconButton
+                  aria-label="Add to favorites"
+                  className={classes.iconList}
+                  onClick={() => { this.toggleBookmark(minimalPokemon) }}>
+
+                  <FavoriteIcon
+                    className={store.isBookmarked(minimalPokemon) ? classes.animInflate : ''}
+                    color={store.isBookmarked(minimalPokemon) ? 'secondary' : 'action'}
+                  />
+                </IconButton>
+              </Avatar>
+            }
+            title={minimalPokemon.name}
+            subheader={`n°${minimalPokemon.id}`}
+          />
+        </Card>
+      </Tilt>
     )
   }
 
