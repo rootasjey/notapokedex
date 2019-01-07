@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { observer }         from 'mobx-react';
 import { store }            from '../../store';
 
+import Tilt                 from 'react-tilt';
+
 import {
   IReactionDisposer,
   autorun,
@@ -155,20 +157,22 @@ class Caroussel extends Component<
             </IconButton>
           </div>
 
-          <Card
-            className={ this.state.imgBig ? classes.cardBig : classes.card }
-            raised={true}
-            square={true}
-            onClick={() => { this.setState({ imgBig: !this.state.imgBig }) }}
-          >
-            <CardActionArea>
-              <CardMedia
-                className={ this.state.imgBig ? classes.mediaBig : classes.media }
-                image={this.state.currentImgSrc}
-                title={this.state.currentImgKey.replace('_', ' ')}
-              />
-            </CardActionArea>
-          </Card>
+          <Tilt options={{ scale: 1.1 }}>
+            <Card
+              className={ this.state.imgBig ? classes.cardBig : classes.card }
+              raised={true}
+              square={true}
+              onClick={() => { this.setState({ imgBig: !this.state.imgBig }) }}
+            >
+              <CardActionArea>
+                <CardMedia
+                  className={ this.state.imgBig ? classes.mediaBig : classes.media }
+                  image={this.state.currentImgSrc}
+                  title={this.state.currentImgKey.replace('_', ' ')}
+                />
+              </CardActionArea>
+            </Card>
+          </Tilt>
 
           <div className={classes.iconButtonContainer}>
             <IconButton className={classes.iconButton}
@@ -262,19 +266,25 @@ class Caroussel extends Component<
           key={key}
           in={this.state.imgBig}
         >
-          <Card
-            className={this.state.currentImgKey === key ? classes.cardSmallRaised : classes.cardSmall}
-            onClick={() => { this.selectSprite(key, sprites[key]) }}
-            square={true}
-          >
-            <CardActionArea>
-              <CardMedia
-                className={classes.mediaSmall}
-                image={sprites[key]}
-                title={name}
-              />
-            </CardActionArea>
-          </Card>
+          <Tilt options={{scale: 1.1 }}>
+            <Card
+              className={
+                this.state.currentImgKey === key ?
+                classes.cardSmallRaised :
+                classes.cardSmall
+              }
+              onClick={() => { this.selectSprite(key, sprites[key]) }}
+              square={true}
+            >
+              <CardActionArea>
+                <CardMedia
+                  className={classes.mediaSmall}
+                  image={sprites[key]}
+                  title={name}
+                />
+              </CardActionArea>
+            </Card>
+          </Tilt>
         </Grow>
       ));
   }

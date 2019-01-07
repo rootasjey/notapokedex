@@ -11,7 +11,7 @@ import FavoriteIcon                   from '@material-ui/icons/Favorite';
 import ReactList                      from 'react-list';
 import { autorun, IReactionDisposer } from 'mobx';
 
-import Tilt from 'react-tilt';
+import Tilt                           from 'react-tilt';
 
 import {
   Avatar,
