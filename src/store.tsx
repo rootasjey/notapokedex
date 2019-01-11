@@ -239,7 +239,7 @@ class Store {
 
     this.spritesIdsBatch.push(id);
 
-    if (this.spritesIdsBatch.length > 50) {
+    if (this.spritesIdsBatch.length > 80) {
       const removedId = this.spritesIdsBatch.shift();
 
       if (typeof removedId === 'number') {
