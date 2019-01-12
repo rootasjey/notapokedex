@@ -54,7 +54,7 @@ class Tweets extends Component<{ classes: any }, {}> {
 
   componentDidMount() {
     this.pokemonNameDisposer = autorun(() => {
-      const { name } =store.selectedPokemon;
+      const { name } = store.selectedPokemon;
 
       if (name) {
         store.fetchTweets(name);
@@ -67,7 +67,7 @@ class Tweets extends Component<{ classes: any }, {}> {
     });
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     store.stopTweetStream();
 
     if (this.pokemonNameDisposer) {

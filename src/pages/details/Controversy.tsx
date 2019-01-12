@@ -4,6 +4,11 @@ import { observer }         from "mobx-react";
 import { store }            from "../../store";
 
 import {
+  IReactionDisposer,
+  autorun,
+} from "mobx";
+
+import {
   Typography,
   IconButton,
   StyleRulesCallback,
@@ -38,13 +43,29 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
 
 @observer
 class Controversy extends Component<{ classes: any }, {}> {
+  private pokemonIdDisposer?: IReactionDisposer;
+
   constructor(props: any) {
     super(props);
   }
 
   componentDidMount() {
-    if (store.selectedPokemon.id > 0) {
-      store.fetchControversy(store.selectedPokemon.id);
+    this.pokemonIdDisposer = autorun(() => {
+      const { id } = store.selectedPokemon;
+
+      if (id > 0) {
+        store.fetchControversy(store.selectedPokemon.id);
+
+        if (this.pokemonIdDisposer) {
+          this.pokemonIdDisposer();
+        }
+      }
+    });
+  }
+
+  compononentWillUnmount() {
+    if (this.pokemonIdDisposer) {
+      this.pokemonIdDisposer();
     }
   }
 
