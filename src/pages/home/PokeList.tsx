@@ -27,14 +27,13 @@ import {
 } from '@material-ui/core';
 
 import {
-  Theme,
-  StyleRulesCallback,
   withStyles,
+  createStyles,
 } from '@material-ui/core/styles';
 
 import blank from '../../assets/blank.png';
 
-const styles: StyleRulesCallback = (theme: Theme) => ({
+const styles = () => createStyles({
   animInflate: {
     animationName: 'inflate',
     animationDuration: '.6s',

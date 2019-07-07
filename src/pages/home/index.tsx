@@ -34,9 +34,9 @@ import {
 import {
   withStyles,
   Theme,
-  StyleRulesCallback,
   createMuiTheme,
   MuiThemeProvider,
+  createStyles,
 } from '@material-ui/core/styles';
 
 import {
@@ -48,7 +48,7 @@ import {
 } from '@material-ui/icons';
 
 
-const styles: StyleRulesCallback = (theme: Theme)  => ({
+const styles = (theme: Theme)  => createStyles({
   favoriteIcon: {
     marginLeft: '10px',
   },
@@ -56,10 +56,10 @@ const styles: StyleRulesCallback = (theme: Theme)  => ({
     flexGrow: 1,
   },
   inputInput: {
-    paddingTop: theme.spacing.unit,
-    paddingEight: theme.spacing.unit,
-    paddingBottom: theme.spacing.unit,
-    paddingLeft: theme.spacing.unit * 10,
+    paddingTop: theme.spacing(1),
+    paddingRight: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
+    paddingLeft: theme.spacing(10),
     transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('sm')]: {
@@ -87,12 +87,12 @@ const styles: StyleRulesCallback = (theme: Theme)  => ({
     marginLeft: 0,
     width: '100%',
     [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing.unit,
+      marginLeft: theme.spacing(),
       width: 'auto'
     },
   },
   searchIcon: {
-    width: theme.spacing.unit * 9,
+    width: theme.spacing() * 9,
     height: '100%',
     position: 'absolute',
     pointerEvents: 'none',
@@ -134,7 +134,7 @@ class Home extends Component<
       palette: {
         type: 'light',
       },
-      typography: { useNextVariants: true, },
+      typography: {},
     });
 
     const classes = this.props.classes;
@@ -151,7 +151,7 @@ class Home extends Component<
         palette: {
           type: 'dark',
         },
-        typography: { useNextVariants: true },
+        typography: {},
       });
     }
 

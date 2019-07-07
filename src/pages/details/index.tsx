@@ -24,15 +24,14 @@ import {
 } from '@material-ui/core';
 
 import {
-  Theme,
-  StyleRulesCallback,
+  createStyles,
   withStyles,
   createMuiTheme,
   MuiThemeProvider,
  } from '@material-ui/core/styles';
 
 
-const styles: StyleRulesCallback = (theme: Theme) => ({
+const styles = () => createStyles({
   root: {
     flexGrow: 1,
     margin: 'auto',
@@ -46,10 +45,6 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
 class Details extends Component<{ classes: any }, {}> {
 
   private bookmarksDisposer?: IReactionDisposer;
-
-  constructor(props: any) {
-    super(props);
-  }
 
   componentDidMount() {
     this.bookmarksDisposer = autorun(() => {
@@ -84,7 +79,7 @@ class Details extends Component<{ classes: any }, {}> {
       palette: {
         type: 'light',
       },
-      typography: { useNextVariants: true, }
+      typography: { }
     });
 
     if (store.theme === ThemeType.Dark) {
@@ -92,7 +87,7 @@ class Details extends Component<{ classes: any }, {}> {
         palette: {
           type: 'dark',
         },
-        typography: { useNextVariants: true },
+        typography: {},
       });
     }
 

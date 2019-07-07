@@ -4,12 +4,11 @@ import styled   from 'styled-components';
 import { Chip } from '@material-ui/core';
 
 import {
-  StyleRulesCallback,
-  Theme,
   withStyles,
+  createStyles,
 } from '@material-ui/core/styles';
 
-const styles: StyleRulesCallback = (theme: Theme) => ({
+const styles = () => createStyles({
   chip: {
     margin: '5px',
   },

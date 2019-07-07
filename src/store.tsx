@@ -279,6 +279,8 @@ class Store {
 
           const pokemonWithSprites = { ...pokemon, ...{ sprites: data.sprites } };
           this.list[data.id - 1] = pokemonWithSprites;
+
+          return pokemonWithSprites;
         });
 
         this.spritesIdsBatch = [];

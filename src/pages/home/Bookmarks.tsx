@@ -19,14 +19,13 @@ import {
 
 import {
   withStyles,
-  Theme,
-  StyleRulesCallback,
+  createStyles,
 } from '@material-ui/core/styles';
 
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
 
-const styles: StyleRulesCallback = (theme: Theme) => ({
+const styles = () => createStyles({
   chipsRoot: {
     maxWidth: 150,
     padding: 20,
@@ -38,11 +37,6 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
 
 @observer
 class Bookmarks extends Component<{ classes: any, history: any }, {}> {
-
-  constructor(props: any) {
-    super(props);
-  }
-
   render() {
     const bookmarks = store.bookmarks;
     const content = this.getContent(bookmarks);

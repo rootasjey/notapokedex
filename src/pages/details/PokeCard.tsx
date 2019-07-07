@@ -11,10 +11,6 @@ import { Typography }         from "@material-ui/core";
 
 @observer
 export default class PokeCard extends Component<ICardProps, {}> {
-  constructor(props: ICardProps) {
-    super(props);
-  }
-
   public componentDidMount() {
     store.fetchPokemon(this.props.id);
   }
@@ -43,11 +39,6 @@ export default class PokeCard extends Component<ICardProps, {}> {
 const StyledContainer = styled.div`
   padding-top: 60px;
   text-align: center;
-`;
-
-const StyledPageSubTitle = styled.h1`
-  text-align: center;
-  font-size: 2em;
 `;
 
 export interface ICardProps {

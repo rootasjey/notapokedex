@@ -11,10 +11,9 @@ import {
 import {
   Typography,
   IconButton,
-  StyleRulesCallback,
-  Theme,
   withStyles,
   Tooltip,
+  createStyles,
 } from "@material-ui/core";
 
 import {
@@ -22,7 +21,7 @@ import {
   FavoriteBorderTwoTone,
 } from '@material-ui/icons';
 
-const styles: StyleRulesCallback = (theme: Theme) => ({
+const styles = () => createStyles({
   root: {
     display: 'flex',
     flexDirection: 'column',
@@ -39,15 +38,11 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
     display: 'flex',
     flexDirection: 'column',
   },
-})
+});
 
 @observer
 class Controversy extends Component<{ classes: any }, {}> {
   private pokemonIdDisposer?: IReactionDisposer;
-
-  constructor(props: any) {
-    super(props);
-  }
 
   componentDidMount() {
     this.pokemonIdDisposer = autorun(() => {

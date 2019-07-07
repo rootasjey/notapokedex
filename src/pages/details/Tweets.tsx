@@ -17,14 +17,13 @@ import {
 } from '@material-ui/core';
 
 import {
-  Theme,
-  StyleRulesCallback,
   withStyles,
+  createStyles,
 } from '@material-ui/core/styles';
 
 import { IReactionDisposer, autorun } from "mobx";
 
-const styles: StyleRulesCallback = (theme: Theme) => ({
+const styles = () => createStyles({
   avatar: {
     backgroundColor: '#0984e3'
   },
@@ -47,10 +46,6 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
 @observer
 class Tweets extends Component<{ classes: any }, {}> {
   private pokemonNameDisposer?: IReactionDisposer;
-
-  constructor(props: any) {
-    super(props);
-  }
 
   componentDidMount() {
     this.pokemonNameDisposer = autorun(() => {

@@ -25,12 +25,11 @@ import {
 } from '@material-ui/icons';
 
 import {
-  Theme,
-  StyleRulesCallback,
   withStyles,
+  createStyles,
 } from '@material-ui/core/styles';
 
-const styles: StyleRulesCallback = (theme: Theme) => ({
+const styles = () => createStyles({
   card: {
     height: 150,
     transition: '.3s',
@@ -102,7 +101,7 @@ class Caroussel extends Component<
     currentImgSrc: string,
   }> {
 
-    private spritesDisposer?: IReactionDisposer;
+  private spritesDisposer?: IReactionDisposer;
 
   constructor(props: any) {
     super(props);
@@ -139,7 +138,6 @@ class Caroussel extends Component<
 
   render() {
     const { classes } = this.props;
-    const pokemonName: string = store.selectedPokemon.name;
 
     if (!this.state.currentImgSrc) {
       return <span></span>
